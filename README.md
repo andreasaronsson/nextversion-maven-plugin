@@ -11,6 +11,9 @@ This means that `1.0.0` is changed to `1.0.1` and `2.0.99` is changed to `2.0.10
 Queries the deployment repo to know 'previous version'.
 The version present in the pom file is only used as fallback.
 
+Any other version propagation must be done in a different way.
+One way is to do manual deploy of the first major or minor version.
+
 System property `${commit}` is the value of git commit.
 This value is intended to be used in the jar MANIFEST.MF or the like.
 
