@@ -7,8 +7,6 @@ import kong.unirest.Unirest;
 import org.apache.maven.AbstractMavenLifecycleParticipant;
 import org.apache.maven.MavenExecutionException;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.versioning.ArtifactVersion;
-import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.ModelReader;
@@ -32,8 +30,9 @@ import static org.apache.commons.lang3.StringUtils.substringsBetween;
  * Sets the version to current latest version +1
  */
 @Component(role = AbstractMavenLifecycleParticipant.class, hint = "NextBuildNumberLifecycleParticipant")
-public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleParticipant {
+public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleParticipant implements Incrementable {
 
+    private static final String COMMIT = "commit";
     private static Logger log = LoggerFactory.getLogger(NextBuildNumberLifecycleParticipant.class);
     @Requirement
     private ModelWriter modelWriter;
@@ -46,13 +45,13 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         var model = Try.of(() -> modelReader.read(pom, null)).getOrElseThrow(e -> new MavenExecutionException(e.getMessage(), e));
         var xmlData = xmlData(session, model);
         var version = versionFromString(xmlData).getOrElseThrow(() -> new MavenExecutionException("No data found", new Throwable()));
-        var nextVersion = findNextNumber(version);
+        var nextVersion = newVersion(version);
         log.info("Version {}", nextVersion);
         model.setVersion(nextVersion);
         Try.run(() -> modelWriter.write(pom, null, model));
     }
 
-    String xmlData(MavenSession session, Model model) {
+    private String xmlData(MavenSession session, Model model) {
         return List.ofAll(session.getRequest().getProjectBuildingRequest().getRemoteRepositories())
                 .map(ArtifactRepository::getUrl)
                 .map(u -> urlFromRepo(u, model))
@@ -60,18 +59,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
                 .reject(s -> s.contains("404 Not Found")).toCharSeq().toString();
     }
 
-    String findNextNumber(String version) {
-        ArtifactVersion av = new DefaultArtifactVersion(version);
-        if (version.length() > 3) {
-            return av.getMajorVersion() + "." + av.getMinorVersion() + "." + (av.getIncrementalVersion() + 1);
-        } else if (version.length() > 1) {
-            return av.getMajorVersion() + "." + (av.getMinorVersion() + 1);
-        }
-        return "" + (av.getMajorVersion() + 1);
-    }
-
-
-    Option<String> versionFromString(String data) {
+    private Option<String> versionFromString(String data) {
         String[] found = substringsBetween(data, "<latest>", "</latest>");
         if (found.length == 0) {
             return Option.none();
@@ -79,7 +67,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         return Option.of(found[0]);
     }
 
-    String urlFromRepo(String repoUrl, Model model) {
+    private String urlFromRepo(String repoUrl, Model model) {
         var groupId = Option.of(model.getGroupId()).getOrElse(() -> model.getParent().getGroupId());
         return join("/", removeEnd(repoUrl, "/"), groupId.replace('.', '/'), model.getArtifactId(), "maven-metadata.xml");
     }
@@ -92,7 +80,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
             try {
                 doWork(session);
             } catch (PluginException e) {
-                throw new MavenExecutionException(e.getMessage(), e.getCause());
+                throw new MavenExecutionException(e.getMessage(), e);
             }
         }
 
@@ -106,12 +94,11 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         setGitRevision(session);
     }
 
-    void setGitRevision(MavenSession session) {
+    private void setGitRevision(MavenSession session) {
         logAndSetProperty(session, run(session.getCurrentProject().getBasedir()));
     }
 
-    String run(File workingDirectory) {
-        log.info("Running {}", "git rev-parse HEAD");
+    private String run(File workingDirectory) {
         Commandline cl = new Commandline("git rev-parse HEAD");
         cl.setWorkingDirectory(workingDirectory);
         StringStreamConsumer stdout = new StringStreamConsumer();
@@ -128,9 +115,9 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
     }
 
     private void logAndSetProperty(MavenSession session, String value) {
-        session.getSystemProperties().setProperty("commit", value);
-        session.getUserProperties().setProperty("commit", value);
-        session.getCurrentProject().getProperties().setProperty("commit", value);
-        log.info("{} set to {}", "commit", value);
+        session.getSystemProperties().setProperty(COMMIT, value);
+        session.getUserProperties().setProperty(COMMIT, value);
+        session.getCurrentProject().getProperties().setProperty(COMMIT, value);
+        log.info("{} set to {}", COMMIT, value);
     }
 }
