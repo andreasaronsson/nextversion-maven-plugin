@@ -12,5 +12,7 @@ class IncrementableTest implements Incrementable {
         assertEquals("3.4.2", newVersion("3.4.1"));
         assertEquals("3.0.10", newVersion("3.0.9"));
         assertEquals("3.0.101", newVersion("3.0.100"));
+        assertEquals("3.1", newVersion("3.0"));
+        assertEquals("3", newVersion("2"));
     }
 }

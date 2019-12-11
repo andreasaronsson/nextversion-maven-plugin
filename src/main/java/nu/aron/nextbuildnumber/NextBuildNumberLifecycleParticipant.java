@@ -74,8 +74,8 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
 
     @Override
     public final void afterProjectsRead(MavenSession session) throws MavenExecutionException {
-        if (isDryRun(session)) {
-            log.info("Dry run. No actions will be taken.");
+        if (isDeployGoal(session) || isDryRun(session)) {
+            log.info("Deploy not called. No actions will be taken.");
         } else {
             try {
                 doWork(session);
@@ -88,6 +88,11 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
 
     private boolean isDryRun(MavenSession s) {
         return Option.of(s.getUserProperties().get("dryRun")).isDefined();
+    }
+
+    private boolean isDeployGoal(MavenSession s) {
+        log.info("goals {}", s.getRequest().getGoals());
+        return s.getRequest().getGoals().contains("deploy");
     }
 
     private void doWork(MavenSession session) {
