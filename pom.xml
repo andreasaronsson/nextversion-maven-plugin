@@ -3,7 +3,7 @@
   <parent>
     <groupId>nu.aron</groupId>
     <artifactId>maven-plugins</artifactId>
-    <version>16</version>
+    <version>17</version>
     <relativePath/>
   </parent>
   <artifactId>nextversion-maven-plugin</artifactId>
@@ -13,7 +13,6 @@
     <connection>scm:git:git@github.com:andreasaronsson/nextversion-maven-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:andreasaronsson/nextversion-maven-plugin.git</developerConnection>
     <url>https://github.com/andreasaronsson/nextversion-maven-plugin</url>
-<tag>HEAD</tag>
   </scm>
   <properties>
     <maven.version>3.6.2</maven.version>
@@ -82,10 +81,6 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.8.1</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-scm-publish-plugin</artifactId>
           <version>3.0.0</version>
         </plugin>
@@ -133,29 +128,6 @@
             <goals>
               <goal>generate-metadata</goal>
             </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <version>3.0.0-M2</version>
-        <executions>
-          <execution>
-            <id>enforce-versions</id>
-            <phase>none</phase>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireMavenVersion>
-                  <version>3.6.2</version>
-                </requireMavenVersion>
-                <requireOS>
-                  <family>unix</family>
-                </requireOS>
-              </rules>
-            </configuration>
           </execution>
         </executions>
       </plugin>
