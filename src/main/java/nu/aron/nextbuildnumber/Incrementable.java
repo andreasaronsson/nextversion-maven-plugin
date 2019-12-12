@@ -1,6 +1,5 @@
 package nu.aron.nextbuildnumber;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import org.codehaus.mojo.versions.ordering.MavenVersionComparator;

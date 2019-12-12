@@ -11,17 +11,14 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.ModelReader;
 import org.apache.maven.model.io.ModelWriter;
-import org.apache.maven.shared.utils.cli.CommandLineUtils;
-import org.apache.maven.shared.utils.cli.CommandLineUtils.StringStreamConsumer;
-import org.apache.maven.shared.utils.cli.Commandline;
 import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.util.function.Consumer;
 
 import static java.lang.String.join;
+import static nu.aron.nextbuildnumber.Constants.LOGNAME;
+import static nu.aron.nextbuildnumber.Constants.log;
 import static org.apache.commons.lang3.StringUtils.removeEnd;
 import static org.apache.commons.lang3.StringUtils.substringsBetween;
 
@@ -30,10 +27,8 @@ import static org.apache.commons.lang3.StringUtils.substringsBetween;
  * Sets the version to current latest version +1
  */
 @Component(role = AbstractMavenLifecycleParticipant.class, hint = "NextBuildNumberLifecycleParticipant")
-public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleParticipant implements Incrementable {
+public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleParticipant implements Incrementable, GitRevision {
 
-    private static final String COMMIT = "commit";
-    private static Logger log = LoggerFactory.getLogger(NextBuildNumberLifecycleParticipant.class);
     @Requirement
     private ModelWriter modelWriter;
     @Requirement
@@ -41,12 +36,26 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
 
     @Override
     public void afterSessionStart(MavenSession session) throws MavenExecutionException {
+        if (!isDeployGoal(session) || isDryRun(session)) {
+            // Do nothing
+        } else {
+            try {
+                log.info("{} Deploy goal. Version will be incremented.", LOGNAME);
+                doWork(this::witeNewVersion, session);
+            } catch (PluginException e) {
+                throw new MavenExecutionException(e.getMessage(), e);
+            }
+        }
+    }
+
+    private void witeNewVersion(MavenSession session) throws PluginException {
         var pom = session.getRequest().getPom().getAbsoluteFile();
-        var model = Try.of(() -> modelReader.read(pom, null)).getOrElseThrow(e -> new MavenExecutionException(e.getMessage(), e));
+        var model = Try.of(() -> modelReader.read(pom, null)).getOrElseThrow(PluginException::new);
         var xmlData = xmlData(session, model);
-        var version = versionFromString(xmlData).getOrElseThrow(() -> new MavenExecutionException("No data found", new Throwable()));
+        var version = versionFromString(xmlData).getOrElse("NOTFOUND");
+        log.info("{} Latest released version {}", LOGNAME, version);
         var nextVersion = newVersion(version);
-        log.info("Version {}", nextVersion);
+        log.info("{} Next version {}", LOGNAME, nextVersion);
         model.setVersion(nextVersion);
         Try.run(() -> modelWriter.write(pom, null, model));
     }
@@ -60,7 +69,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
     }
 
     private Option<String> versionFromString(String data) {
-        String[] found = substringsBetween(data, "<latest>", "</latest>");
+        String[] found = substringsBetween(data, "<release>", "</release>");
         if (found.length == 0) {
             return Option.none();
         }
@@ -74,11 +83,11 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
 
     @Override
     public final void afterProjectsRead(MavenSession session) throws MavenExecutionException {
-        if (isDeployGoal(session) || isDryRun(session)) {
-            log.info("Deploy not called. No actions will be taken.");
+        if (isDryRun(session)) {
+            log.info("Dry run. Will not set commit property to git checksum.");
         } else {
             try {
-                doWork(session);
+                doWork(this::set, session);
             } catch (PluginException e) {
                 throw new MavenExecutionException(e.getMessage(), e);
             }
@@ -91,38 +100,10 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
     }
 
     private boolean isDeployGoal(MavenSession s) {
-        log.info("goals {}", s.getRequest().getGoals());
         return s.getRequest().getGoals().contains("deploy");
     }
 
-    private void doWork(MavenSession session) {
-        setGitRevision(session);
-    }
-
-    private void setGitRevision(MavenSession session) {
-        logAndSetProperty(session, run(session.getCurrentProject().getBasedir()));
-    }
-
-    private String run(File workingDirectory) {
-        Commandline cl = new Commandline("git rev-parse HEAD");
-        cl.setWorkingDirectory(workingDirectory);
-        StringStreamConsumer stdout = new StringStreamConsumer();
-        Try.of(() -> CommandLineUtils.executeCommandLine(cl, stdout, new LoggingConsumer()))
-                .getOrElseThrow(e -> new PluginException((Exception) e));
-        return stdout.getOutput();
-    }
-
-    private static class LoggingConsumer extends StringStreamConsumer {
-        @Override
-        public void consumeLine(String line) {
-            log.error("{}", line);
-        }
-    }
-
-    private void logAndSetProperty(MavenSession session, String value) {
-        session.getSystemProperties().setProperty(COMMIT, value);
-        session.getUserProperties().setProperty(COMMIT, value);
-        session.getCurrentProject().getProperties().setProperty(COMMIT, value);
-        log.info("{} set to {}", COMMIT, value);
+    private void doWork(Consumer<MavenSession> c, MavenSession s) {
+        c.accept(s);
     }
 }

@@ -13,11 +13,7 @@
     <connection>scm:git:git@github.com:andreasaronsson/nextversion-maven-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:andreasaronsson/nextversion-maven-plugin.git</developerConnection>
     <url>https://github.com/andreasaronsson/nextversion-maven-plugin</url>
-<tag>HEAD</tag>
   </scm>
-  <properties>
-    <maven.version>3.6.2</maven.version>
-  </properties>
   <dependencies>
     <dependency>
       <groupId>org.apache.httpcomponents</groupId>
@@ -27,7 +23,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
-      <version>${maven.version}</version>
+      <version>3.6.3</version>
     </dependency>
     <dependency>
       <groupId>org.codehaus.mojo</groupId>
@@ -43,7 +39,7 @@
     <dependency>
       <groupId>com.konghq</groupId>
       <artifactId>unirest-java</artifactId>
-      <version>3.1.04</version>
+      <version>3.3.00</version>
     </dependency>
     <dependency>
       <groupId>io.vavr</groupId>

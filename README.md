@@ -40,3 +40,24 @@ In `.mvn/extensions.xml` add the following:
   </extension>
 </extensions>
 ```
+
+In order to stamp the jar with the git checksum configure the maven-jar-plugin:
+
+```xml
+<build>
+  <plugins>
+      <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-jar-plugin</artifactId>
+      <version>3.2.0</version>
+      <configuration>
+        <archive>
+          <manifestEntries>
+            <commit>${commit}</commit>
+          </manifestEntries>
+        </archive>
+      </configuration>
+      </plugin>
+  </plugins>
+</build>
+```
