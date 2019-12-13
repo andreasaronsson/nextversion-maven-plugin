@@ -8,7 +8,7 @@ import static nu.aron.nextbuildnumber.Constants.log;
 
 interface GitRevision {
 
-    default void set(MavenSession session) {
+    default void setRevision(MavenSession session) {
         logAndSetProperty(session, run(session.getCurrentProject().getBasedir()));
     }
 
