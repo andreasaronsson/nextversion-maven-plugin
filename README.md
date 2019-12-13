@@ -25,6 +25,9 @@ Release with `mvn deploy`.
 The plugin is only activated if maven was invoked with the deploy goals.
 For local builds with e.g. `mvn verify` no action will be taken.
 
+If there is no released version the plugin will use the version in the pom.
+An existing -SNAPSHOT substring will be removed.
+
 ## Usage
 
 Relies on the .mvn directory functionality added in maven-3.3.1.

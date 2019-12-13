@@ -17,10 +17,9 @@ import org.codehaus.plexus.component.annotations.Requirement;
 import java.util.function.Consumer;
 
 import static java.lang.String.join;
-import static nu.aron.nextbuildnumber.Constants.LOGNAME;
 import static nu.aron.nextbuildnumber.Constants.log;
 import static org.apache.commons.lang3.StringUtils.removeEnd;
-import static org.apache.commons.lang3.StringUtils.substringsBetween;
+import static org.apache.commons.lang3.StringUtils.substringBetween;
 
 /**
  * Queries the deployment repo for current latest version.
@@ -39,23 +38,21 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         if (!isDeployGoal(session) || isDryRun(session)) {
             // Do nothing
         } else {
-            try {
-                log.info("{} Deploy goal. Version will be incremented.", LOGNAME);
-                doWork(this::witeNewVersion, session);
-            } catch (PluginException e) {
-                throw new MavenExecutionException(e.getMessage(), e);
-            }
+            log("Deploy goal. Version will be incremented.");
+            doWork(this::witeNewVersion, session);
         }
     }
 
-    private void witeNewVersion(MavenSession session) throws PluginException {
+    private void witeNewVersion(MavenSession session) {
         var pom = session.getRequest().getPom().getAbsoluteFile();
         var model = Try.of(() -> modelReader.read(pom, null)).getOrElseThrow(PluginException::new);
         var xmlData = xmlData(session, model);
-        var version = versionFromString(xmlData).getOrElse("NOTFOUND");
-        log.info("{} Latest released version {}", LOGNAME, version);
+        var version = versionFromString(xmlData)
+                .onEmpty(() -> log("No previous release found."))
+                .getOrElse(removeEnd(model.getVersion(), "-SNAPSHOT"));
+        log("Latest released version {}", version);
         var nextVersion = newVersion(version);
-        log.info("{} Next version {}", LOGNAME, nextVersion);
+        log("Next version {}", nextVersion);
         model.setVersion(nextVersion);
         Try.run(() -> modelWriter.write(pom, null, model));
     }
@@ -69,11 +66,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
     }
 
     private Option<String> versionFromString(String data) {
-        String[] found = substringsBetween(data, "<release>", "</release>");
-        if (found.length == 0) {
-            return Option.none();
-        }
-        return Option.of(found[0]);
+        return Option.of(substringBetween(data, "<release>", "</release>"));
     }
 
     private String urlFromRepo(String repoUrl, Model model) {
@@ -84,15 +77,10 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
     @Override
     public final void afterProjectsRead(MavenSession session) throws MavenExecutionException {
         if (isDryRun(session)) {
-            log.info("Dry run. Will not set commit property to git checksum.");
+            log("Dry run. Will not set commit property to git checksum.");
         } else {
-            try {
-                doWork(this::set, session);
-            } catch (PluginException e) {
-                throw new MavenExecutionException(e.getMessage(), e);
-            }
+            doWork(this::set, session);
         }
-
     }
 
     private boolean isDryRun(MavenSession s) {
@@ -103,7 +91,11 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         return s.getRequest().getGoals().contains("deploy");
     }
 
-    private void doWork(Consumer<MavenSession> c, MavenSession s) {
-        c.accept(s);
+    private void doWork(Consumer<MavenSession> c, MavenSession s) throws MavenExecutionException {
+        try {
+            c.accept(s);
+        } catch (PluginException e) {
+            throw new MavenExecutionException(e.getMessage(), e);
+        }
     }
 }

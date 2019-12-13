@@ -23,4 +23,8 @@ class Constants {
             throw new PluginException(e);
         }
     }
+
+    static void log(String message, String... args) {
+        log.info("{} ", LOGNAME, args);
+    }
 }
