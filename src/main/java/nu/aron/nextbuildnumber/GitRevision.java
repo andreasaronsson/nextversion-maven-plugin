@@ -16,6 +16,6 @@ interface GitRevision {
         session.getSystemProperties().setProperty(COMMIT, value);
         session.getUserProperties().setProperty(COMMIT, value);
         session.getCurrentProject().getProperties().setProperty(COMMIT, value);
-        log("project property {}={}", COMMIT, value);
+        log("Project property {} set to {}", COMMIT, value);
     }
 }
