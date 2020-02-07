@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ `git status --porcelain` ]]; then
+if [[ $(git status --porcelain) ]]; then
     git commit -m'Automated updates' -a
     git push
 fi
