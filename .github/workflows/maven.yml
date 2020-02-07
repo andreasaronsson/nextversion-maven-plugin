@@ -25,7 +25,7 @@ jobs:
       run: mvn -B package --file pom.xml
     - name: Commit updates on successful build
       if: success()
-      run: ./commit-if-changed.sh
+      run: sh commit-if-changed.sh
       shell: bash
     - name: Clean
       run: rm -rf ~/.m2/repository/nu/aron
