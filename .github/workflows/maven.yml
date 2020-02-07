@@ -1,7 +1,9 @@
 name: Java CI
 
-on: [push]
-
+on:
+  push:
+  schedule:
+    - cron: '0 0 12 ? * SAT *'
 jobs:
   build:
 
@@ -18,8 +20,11 @@ jobs:
       with:
         version: '11.0.6'
     - name: Get latest deps
-      run: mvn -B versions:use-latest-versions
+      run: mvn -B versions:update-parent versions:use-latest-versions
     - name: Build with Maven
       run: mvn -B package --file pom.xml
+    - name: Commit updates on successful build
+      if: success()
+      run: sh commit-if-changed.sh
     - name: Clean
       run: rm -rf ~/.m2/repository/nu/aron
