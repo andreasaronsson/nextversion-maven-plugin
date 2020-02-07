@@ -69,4 +69,4 @@ In order to stamp the jar with the git checksum configure the maven-jar-plugin:
 
 ## Roadmap
 
-TBD
+* Add autorelease
