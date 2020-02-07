@@ -1,5 +1,7 @@
 # Nextversion maven plugin
 
+![Java CI](https://github.com/andreasaronsson/nextversion-maven-plugin/workflows/Java%20CI/badge.svg)
+
 Increments versions CD style.
 One binary is created per build.
 Each binary contains the sha git checksum.
