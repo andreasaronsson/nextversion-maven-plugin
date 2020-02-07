@@ -20,7 +20,7 @@ This means that `1` is changed to `2` and so on.
 Any other version propagation must be done in a different way.
 One way is to do manual deploy of the first major or minor version.
 
-System property `${commit}` is the value of git commit.
+System property `${nextversion.commit}` is the value of git commit.
 This value is intended to be used in the jar MANIFEST.MF or the like.
 
 Release with `mvn deploy`.
@@ -58,7 +58,7 @@ In order to stamp the jar with the git checksum configure the maven-jar-plugin:
       <configuration>
         <archive>
           <manifestEntries>
-            <commit>${commit}</commit>
+            <commit>${nextversion.commit}</commit>
           </manifestEntries>
         </archive>
       </configuration>

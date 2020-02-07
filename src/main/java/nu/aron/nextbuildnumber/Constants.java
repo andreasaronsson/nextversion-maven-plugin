@@ -10,7 +10,7 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 class Constants {
     static Logger log = LoggerFactory.getLogger("nextversion-maven-plugin");
-    static final String COMMIT = "commit";
+    static final String COMMIT = "nextversion.commit";
     static final String LOGNAME = "nextversion-maven-plugin:" + version() + ":next";
 
     static String version() {

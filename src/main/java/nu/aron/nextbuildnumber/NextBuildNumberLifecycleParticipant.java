@@ -1,6 +1,5 @@
 package nu.aron.nextbuildnumber;
 
-import com.google.gson.internal.bind.util.ISO8601Utils;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
 import io.vavr.control.Try;
@@ -19,6 +18,7 @@ import java.nio.file.Paths;
 import java.util.function.Consumer;
 
 import static java.util.function.Function.identity;
+import static nu.aron.nextbuildnumber.Constants.COMMIT;
 import static nu.aron.nextbuildnumber.Constants.log;
 
 /**
@@ -39,17 +39,9 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         if (!isDeployGoal(session) || skipped(session)) {
             log("Not deply goal or skipped. Nothing to do.");
         } else {
-            log("Deploy goal. Version will be incremented.");
-            doWork(this::witeNewVersion, session);
-        }
-    }
-
-    @Override
-    public final void afterProjectsRead(MavenSession session) throws MavenExecutionException {
-        if (skipped(session)) {
-            log("Skipped. Will not set commit property to git checksum.");
-        } else {
+            log("Deploy goal. Version will be incremented and commit property will be set.");
             doWork(this::setRevision, session);
+            doWork(this::witeNewVersion, session);
         }
         AnsiConsole.systemUninstall();
     }
@@ -73,6 +65,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
     private void witeNewVersion(MavenSession session) {
         var pom = session.getRequest().getPom().getAbsoluteFile();
         var model = modelFromFile(pom);
+        model.getProperties().put(COMMIT, session.getSystemProperties().get(COMMIT));
         var version = getCurrent(session, model);
         log("Latest released version {}", version);
         var nextVersion = newVersion(version);
