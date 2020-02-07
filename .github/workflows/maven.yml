@@ -26,10 +26,8 @@ jobs:
     - uses: stefanzweifel/git-auto-commit-action@v3
       with:
         commit_message: Apply automatic changes
-        # Optional glob pattern of files which should be added to the commit
         file_pattern: pom.xml
-        # Optional commit user and author settings
-        commit_user_name: My GitHub Actions Bot
+        commit_user_name: GitHub Actions Bot
         commit_author: Author <actions@gitub.com>
     - name: Clean
       run: rm -rf ~/.m2/repository/nu/aron
