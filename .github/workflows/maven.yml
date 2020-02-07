@@ -23,7 +23,7 @@ jobs:
       run: mvn -B versions:update-parent versions:use-latest-versions
     - name: Build with Maven
       run: mvn -B package --file pom.xml
-    - uses: stefanzweifel/git-auto-commit-action@v3
+    - uses: stefanzweifel/git-auto-commit-action@v3.0.0
       with:
         commit_message: Apply automatic changes
         file_pattern: pom.xml
