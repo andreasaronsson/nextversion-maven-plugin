@@ -10,6 +10,9 @@ Or else retention becomes a problem faster.
 
 Queries the deployment repo to know 'previous version'.
 Then increments the version number.
+
+## How versions are incremented
+
 When the version number has three segments (https://semver.org).
 Increments the patch part of the project version before the build begins.
 This means that `1.0.0` is changed to `1.0.1` and `2.0.99` is changed to `2.0.100` and so on.
@@ -17,18 +20,23 @@ The version present in the pom file is only used as fallback.
 When there is only one segment this number is incremented.
 This means that `1` is changed to `2` and so on.
 
+If there is no released version the plugin will use the version in the pom.
+An existing -SNAPSHOT substring will be removed.
+
 Any other version propagation must be done in a different way.
 One way is to do manual deploy of the first major or minor version.
 
+## Traceability
+
 System property `${nextversion.commit}` is the value of git commit.
 This value is intended to be used in the jar MANIFEST.MF or the like.
+It is also added to the deployed pom file.
+
+## Usage
 
 Release with `mvn deploy`.
 The plugin is only activated if maven was invoked with the deploy goals.
 For local builds with e.g. `mvn verify` no action will be taken.
-
-If there is no released version the plugin will use the version in the pom.
-An existing -SNAPSHOT substring will be removed.
 
 ## Usage
 
