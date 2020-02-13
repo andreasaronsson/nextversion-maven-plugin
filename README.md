@@ -79,4 +79,4 @@ In order to stamp the jar with the git checksum configure the maven-jar-plugin:
 ## Roadmap
 
 * Add autorelease
-* Verify functionality with artifactory, bintray and nexus works
+* Verify functionality with artifactory, bintray and nexus works so it should work
