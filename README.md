@@ -2,6 +2,7 @@
 
 ![Java CI](https://github.com/andreasaronsson/nextversion-maven-plugin/workflows/Java%20CI/badge.svg)
 
+Java 11+.
 Increments versions CD style.
 One binary is created per build.
 Each binary contains the sha git checksum.
@@ -78,3 +79,4 @@ In order to stamp the jar with the git checksum configure the maven-jar-plugin:
 ## Roadmap
 
 * Add autorelease
+* Verify functionality with artifactory, bintray and nexus works
