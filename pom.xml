@@ -7,13 +7,13 @@
     <relativePath/>
   </parent>
   <artifactId>nextversion-maven-plugin</artifactId>
-  <version>9-SNAPSHOT</version>
+  <version>9</version>
   <packaging>maven-plugin</packaging>
   <scm>
     <connection>scm:git:git@github.com:andreasaronsson/nextversion-maven-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:andreasaronsson/nextversion-maven-plugin.git</developerConnection>
     <url>https://github.com/andreasaronsson/nextversion-maven-plugin</url>
-<tag>HEAD</tag>
+<tag>rel-9</tag>
   </scm>
   <repositories>
     <repository>
