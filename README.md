@@ -52,7 +52,7 @@ In `.mvn/extensions.xml` add the following:
   <extension>
     <groupId>nu.aron</groupId>
     <artifactId>nextversion-maven-plugin</artifactId>
-    <version>FIND_LATEST_VERSION</version>
+    <version>SEE_DOWNLOAD_LINK_ABOVE</version>
   </extension>
 </extensions>
 ```
