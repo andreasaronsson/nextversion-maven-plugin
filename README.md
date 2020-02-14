@@ -2,6 +2,8 @@
 
 ![Java CI](https://github.com/andreasaronsson/nextversion-maven-plugin/workflows/Java%20CI/badge.svg)
 
+[ ![Download](https://api.bintray.com/packages/aron/maven/nextversion-maven-plugin/images/download.svg) ](https://bintray.com/aron/maven/nextversion-maven-plugin/_latestVersion)
+
 Java 11+.
 Increments versions CD style.
 One binary is created per build.
