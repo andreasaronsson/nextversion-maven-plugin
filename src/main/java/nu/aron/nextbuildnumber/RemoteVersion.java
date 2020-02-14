@@ -16,7 +16,7 @@ interface RemoteVersion {
     default String getCurrent(MavenSession session, Model model) {
         var xmlData = xmlData(session, model);
         return versionFromString(xmlData)
-                .onEmpty(() -> log("No previous release found. Will use pom version element value sans -SNAPSHOT"))
+                .onEmpty(() -> log("No previous release found for {}. Will use version from pom and remove \"-SNAPSHOT\"", Option.of(model.getGroupId()).getOrElse(model.getParent().getGroupId()) + ":" + model.getArtifactId(), model.getVersion()))
                 .getOrElse(removeEnd(model.getVersion(), "-SNAPSHOT"));
 
     }

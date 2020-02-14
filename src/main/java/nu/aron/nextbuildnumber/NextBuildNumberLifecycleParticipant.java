@@ -51,7 +51,8 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
     }
 
     private boolean isDeployGoal(MavenSession s) {
-        return s.getRequest().getGoals().contains("deploy");
+        var goals = s.getRequest().getGoals();
+        return goals.contains("deploy") || goals.contains("deploy:deploy");
     }
 
     private void doWork(Consumer<MavenSession> c, MavenSession s) throws MavenExecutionException {
@@ -96,6 +97,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
     }
 
     void persistVersion(String nextVersion, Model model) {
+        // This version can safely be set in all modules in a multi module build as it is never committed to VCS.
         model.setVersion(nextVersion);
         Try.run(() -> modelWriter.write(model.getPomFile(), null, model));
     }
