@@ -37,7 +37,7 @@ It is also added to the deployed pom file.
 
 ## Usage
 
-Release with `mvn deploy`.
+Release with `mvn deploy` or `mvn deploy:deploy`.
 The plugin is only activated if maven was invoked with the deploy goals.
 For local builds with e.g. `mvn verify` no action will be taken.
 
