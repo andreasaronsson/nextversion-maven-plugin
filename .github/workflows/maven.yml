@@ -24,6 +24,7 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
     - uses: stefanzweifel/git-auto-commit-action@v3.0.0
+      if: success() && github.event_name == 'schedule'
       with:
         commit_message: Apply automatic changes
         file_pattern: pom.xml
