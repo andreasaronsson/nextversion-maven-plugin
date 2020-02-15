@@ -6,13 +6,11 @@
 
 Java 11+.
 Increments versions CD style.
-One binary is created per build.
-Each binary contains the sha git checksum.
-This assumes that only the viable binaries are saved.
-Or else retention becomes a problem faster.
-
 Queries the deployment repo to know 'previous version'.
 Then increments the version number.
+Changes in pom.xml are not checked in.
+
+Verified with Jenkins and Nexus.
 
 ## How versions are incremented
 
@@ -37,11 +35,18 @@ It is also added to the deployed pom file.
 
 ## Usage
 
+### Activation
+
+This plugin can be used to release from the command line.
 Release with `mvn deploy` or `mvn deploy:deploy`.
 The plugin is only activated if maven was invoked with the deploy goals.
 For local builds with e.g. `mvn verify` no action will be taken.
 
-## Usage
+It can also be used to release from a CI service.
+The plugin will try to detect this by looking at the environment variables.
+`BRANCH_NAME` (Jenkins) or `CI` (GitLab).
+
+### Adding to a project
 
 Relies on the .mvn directory functionality added in maven-3.3.1.
 In `.mvn/extensions.xml` add the following:
@@ -80,5 +85,6 @@ In order to stamp the jar with the git checksum configure the maven-jar-plugin:
 
 ## Roadmap
 
-* Add autorelease
-* Verify functionality with artifactory, bintray and nexus works hence it should work
+* Add autorelease for this project
+* Verify functionality with Artifactory
+* Verify functionality with GitLab

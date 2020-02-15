@@ -1,5 +1,7 @@
 package nu.aron.nextbuildnumber;
 
+import io.vavr.control.Option;
+import org.apache.commons.io.input.NullInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,15 +11,19 @@ import java.util.Properties;
 import static org.fusesource.jansi.Ansi.ansi;
 
 class Constants {
-    static Logger log = LoggerFactory.getLogger("nextversion-maven-plugin");
+    static Logger logger = LoggerFactory.getLogger("nextversion-maven-plugin");
     static final String COMMIT = "nextversion.commit";
-    static final String LOGNAME = "nextversion-maven-plugin:" + version() + ":next";
+    static final String MASTER = "master";
+    private static final String LOGNAME = "nextversion-maven-plugin:" + version() + ":next";
 
-    static String version() {
-        var stream = Constants.class.getClassLoader().getResourceAsStream("META-INF/maven/nu.aron/nextversion-maven-plugin/pom.properties");
+    private Constants() {
+    }
+
+    private static String version() {
+        var stream = Option.of(Constants.class.getClassLoader().getResourceAsStream("META-INF/maven/nu.aron/nextversion-maven-plugin/pom.properties"));
         try {
             Properties p = new Properties();
-            p.load(stream);
+            p.load(stream.getOrElse(new NullInputStream(0)));
             return String.valueOf(p.get("version"));
         } catch (IOException e) {
             throw new PluginException(e);
@@ -25,7 +31,7 @@ class Constants {
     }
 
     static void log(String message, String... args) {
-        log.info("--- " + ansi().fgGreen().a(LOGNAME).reset().toString() + " ---");
-        log.info(message, args);
+        logger.info("--- " + ansi().fgGreen().a(LOGNAME).reset() + " ---"); // NOSONAR
+        logger.info(message, (Object[]) args);
     }
 }
