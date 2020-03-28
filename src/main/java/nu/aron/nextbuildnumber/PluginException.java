@@ -1,7 +1,7 @@
 package nu.aron.nextbuildnumber;
 
 class PluginException extends RuntimeException {
-    Throwable e;
+    final Throwable e;
 
     PluginException(Throwable e) {
         this.e = e;

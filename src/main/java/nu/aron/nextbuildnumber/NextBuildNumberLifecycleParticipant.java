@@ -12,6 +12,8 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.fusesource.jansi.AnsiConsole;
 
+import java.io.FileOutputStream;
+import java.util.Properties;
 import java.util.function.Consumer;
 
 import static nu.aron.nextbuildnumber.Constants.COMMIT;
@@ -58,6 +60,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         log("Latest released version {}", version);
         var nextVersion = newVersion(version, branchName(getCwd(session)));
         log("Next version {}", nextVersion);
+        saveValues(nextVersion, session);
         findModels(List.of(model), modelReader).forEach(m -> persistVersion(nextVersion, m));
     }
 
@@ -65,5 +68,12 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         // This version can safely be set in all modules in a multi module build as it is never committed to VCS.
         model.setVersion(nextVersion);
         Try.run(() -> modelWriter.write(model.getPomFile(), null, model));
+    }
+
+    private void saveValues(String nextVersion, MavenSession session) {
+        var p = new Properties();
+        p.put("commit", session.getSystemProperties().get("nextversion.commit"));
+        p.put("version", nextVersion);
+        Try.run(() -> p.store(new FileOutputStream("target/nextversion.properties"), null));
     }
 }

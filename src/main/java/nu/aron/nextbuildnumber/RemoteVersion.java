@@ -3,6 +3,7 @@ package nu.aron.nextbuildnumber;
 import io.vavr.collection.List;
 import io.vavr.control.Option;
 import kong.unirest.Unirest;
+import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Model;
 
@@ -23,7 +24,7 @@ interface RemoteVersion {
 
     default String xmlData(MavenSession session, Model model) {
         return List.ofAll(session.getRequest().getProjectBuildingRequest().getRemoteRepositories())
-                .map(ar -> ar.getUrl())
+                .map(ArtifactRepository::getUrl)
                 .map(u -> urlFromRepo(u, model))
                 .map(u -> Unirest.get(u).asString().getBody())
                 .reject(s -> s.contains("404 Not Found")).toCharSeq().toString();
