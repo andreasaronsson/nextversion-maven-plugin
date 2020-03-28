@@ -14,6 +14,8 @@ class Constants {
     static Logger logger = LoggerFactory.getLogger("nextversion-maven-plugin");
     static final String COMMIT = "nextversion.commit";
     static final String MASTER = "master";
+    static final String GIT_BRANCH = "git rev-parse --abbrev-ref HEAD";
+    static final String GIT_REVISION = "git rev-parse HEAD";
     private static final String LOGNAME = "nextversion-maven-plugin:" + version() + ":next";
 
     private Constants() {
