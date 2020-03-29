@@ -17,6 +17,7 @@ import java.util.Properties;
 import java.util.function.Consumer;
 
 import static nu.aron.nextbuildnumber.Constants.COMMIT;
+import static nu.aron.nextbuildnumber.Constants.VERSION;
 import static nu.aron.nextbuildnumber.Constants.log;
 import static nu.aron.nextbuildnumber.CurrentWorkingDirectory.getCwd;
 
@@ -59,6 +60,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         var version = getCurrent(session, model);
         log("Latest released version {}", version);
         var nextVersion = newVersion(version, branchName(getCwd(session)));
+        session.getSystemProperties().setProperty(VERSION, nextVersion);
         log("Next version {}", nextVersion);
         saveValues(nextVersion, session);
         findModels(List.of(model), modelReader).forEach(m -> persistVersion(nextVersion, m));

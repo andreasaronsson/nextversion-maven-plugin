@@ -29,9 +29,13 @@ One way is to do manual deploy of the first major or minor version.
 
 ## Traceability
 
-System property `${nextversion.commit}` is the value of git commit.
-This value is intended to be used in the jar MANIFEST.MF or the like.
-It is also added to the deployed pom file.
+Two properties are added to the build context.
+The git sha checksum `nextversion.commit`.
+The version number `nextversion.version`. 
+Set as maven system properties `${nextversion.commit}` and `${nextversion.version}`.
+These values are intended to be used in the jar MANIFEST.MF or the like.
+They are also added to the deployed pom file.
+Both properties are written to `target/nextversion.properties`.
 
 ## Usage
 
