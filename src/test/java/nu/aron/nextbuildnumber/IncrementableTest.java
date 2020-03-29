@@ -35,4 +35,15 @@ class IncrementableTest implements Incrementable {
         assertEquals("3-f-BR-1", newVersion("2", "f/BR-1"));
     }
 
+    @Test
+    void countDots() {
+        assertEquals(1, countDots("."));
+        assertEquals(3, countDots("..."));
+        assertEquals(1, countDots("1.2"));
+        assertEquals(3, countDots("1.3.4."));
+        assertEquals(2, countDots("1..2"));
+        assertEquals(2, countDots(".1."));
+        assertEquals(30, countDots(".1.1.1.1.1.1.1..........1.1.1.1.1.2.2.2.2.2...."));
+    }
+
 }

@@ -12,6 +12,7 @@ import static org.fusesource.jansi.Ansi.ansi;
 
 class Constants {
     static Logger logger = LoggerFactory.getLogger("nextversion-maven-plugin");
+    static final String EMPTY = "";
     static final String COMMIT = "nextversion.commit";
     static final String MASTER = "master";
     static final String GIT_BRANCH = "git rev-parse --abbrev-ref HEAD";
