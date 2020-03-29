@@ -44,6 +44,7 @@ class IncrementableTest implements Incrementable {
         assertEquals(2, countDots("1..2"));
         assertEquals(2, countDots(".1."));
         assertEquals(30, countDots(".1.1.1.1.1.1.1..........1.1.1.1.1.2.2.2.2.2...."));
+        assertEquals(0, countDots(""));
     }
 
 }
