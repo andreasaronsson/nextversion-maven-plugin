@@ -26,13 +26,14 @@ import static nu.aron.nextbuildnumber.CurrentWorkingDirectory.getCwd;
  * Sets the version to current latest version +1
  */
 @Component(role = AbstractMavenLifecycleParticipant.class, hint = "NextBuildNumberLifecycleParticipant")
-public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleParticipant implements Incrementable, GitRevision, RemoteVersion, Activator, BranchName, Modelbuilder {
+public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleParticipant implements Incrementable,
+        GitRevision, RemoteVersion, Activator, BranchName, Modelbuilder {
 
     @Requirement
     private ModelWriter modelWriter;
     @Requirement
     private ModelReader modelReader;
-    private Activation active = this::activated;
+    private final Activation active = this::activated;
 
     @Override
     public void afterSessionStart(MavenSession session) throws MavenExecutionException {
@@ -57,7 +58,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         var pom = session.getRequest().getPom().getAbsoluteFile();
         var model = modelFromFile(pom, modelReader);
         model.getProperties().put(COMMIT, session.getSystemProperties().get(COMMIT));
-        var version = getCurrent(session, model);
+        var version = manuallyBumped(model.getVersion(), getCurrent(session, model));
         log("Latest released version {}", version);
         var nextVersion = newVersion(version, branchName(getCwd(session)));
         session.getSystemProperties().setProperty(VERSION, nextVersion);

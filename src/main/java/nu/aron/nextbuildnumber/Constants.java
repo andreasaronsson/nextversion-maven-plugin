@@ -18,6 +18,7 @@ class Constants {
     static final String MASTER = "master";
     static final String GIT_BRANCH = "git rev-parse --abbrev-ref HEAD";
     static final String GIT_REVISION = "git rev-parse HEAD";
+    static final String SNAPSHOT = "SNAPSHOT";
     private static final String LOGNAME = "nextversion-maven-plugin:" + version() + ":next";
 
     private Constants() {

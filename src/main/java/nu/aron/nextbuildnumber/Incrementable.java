@@ -6,6 +6,7 @@ import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static nu.aron.nextbuildnumber.Constants.MASTER;
+import static nu.aron.nextbuildnumber.Constants.log;
 
 interface Incrementable {
     default String newVersion(String currentVersion, String branch) {
@@ -29,5 +30,15 @@ interface Incrementable {
 
     default int countDots(CharSequence str) {
         return (int)str.chars().filter(c -> c == '.').count();
+    }
+
+    default String manuallyBumped(String pomVersion, String remoteVersion) {
+        var pom = new DefaultArtifactVersion(pomVersion);
+        var remote = new DefaultArtifactVersion(remoteVersion);
+        if (1 == pom.compareTo(remote)) {
+            log("Manual version bump identified.");
+            return format("%d.%d.%d", pom.getMajorVersion(), pom.getMinorVersion(), pom.getIncrementalVersion());
+        }
+        return remoteVersion;
     }
 }
