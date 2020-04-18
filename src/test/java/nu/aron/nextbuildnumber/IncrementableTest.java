@@ -52,5 +52,6 @@ class IncrementableTest implements Incrementable {
         assertEquals("1.1.0", manuallyBumped("1.1.0-SNAPSHOT", "1.0.555"));
         assertEquals("1.3.555", manuallyBumped("1.1.0-SNAPSHOT", "1.3.555"));
         assertEquals("1.1.0", manuallyBumped("1.1.0", "1.0.555"));
+        assertEquals("1.0.555", manuallyBumped("1.0.555-FEATURE-JIRA-123", "1.0.555"));
     }
 }
