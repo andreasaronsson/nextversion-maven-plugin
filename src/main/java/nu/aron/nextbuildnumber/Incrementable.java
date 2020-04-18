@@ -9,22 +9,23 @@ import static java.util.Objects.isNull;
 import static nu.aron.nextbuildnumber.Constants.MASTER;
 import static nu.aron.nextbuildnumber.Constants.SNAPSHOT;
 import static nu.aron.nextbuildnumber.Constants.log;
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 interface Incrementable {
-    default String newVersion(String currentVersion, String branch) {
+    default String newVersion(String currentVersion, String branch, int increment) {
         ArtifactVersion version = new DefaultArtifactVersion(currentVersion);
 
         if (countDots(currentVersion) == 0) {
-            return addBranch(valueOf(version.getMajorVersion() + 1), branch);
+            return addBranch(valueOf(version.getMajorVersion() + increment), branch);
         }
         if (countDots(currentVersion) == 1) {
-            return addBranch(format("%d.%d", version.getMajorVersion(), version.getMinorVersion() + 1), branch);
+            return addBranch(format("%d.%d", version.getMajorVersion(), version.getMinorVersion() + increment), branch);
         }
-        return addBranch(format("%d.%d.%d", version.getMajorVersion(), version.getMinorVersion(), version.getIncrementalVersion() + 1), branch);
+        return addBranch(format("%d.%d.%d", version.getMajorVersion(), version.getMinorVersion(), version.getIncrementalVersion() + increment), branch);
     }
 
     private String addBranch(String version, String branch) {
-        if (branch.equals(MASTER)) {
+        if (branch.equals(MASTER) || isEmpty(branch)) {
             return version;
         }
         return version + "-" + branch.replace("/", "-");
@@ -39,7 +40,7 @@ interface Incrementable {
         var remote = new DefaultArtifactVersion(remoteVersion);
         if (isManual(pom, remote)) {
             log("Manual version bump identified.");
-            return format("%d.%d.%d", pom.getMajorVersion(), pom.getMinorVersion(), pom.getIncrementalVersion());
+            return newVersion(pomVersion, "", 0);
         }
         return remoteVersion;
     }

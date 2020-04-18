@@ -60,7 +60,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         model.getProperties().put(COMMIT, session.getSystemProperties().get(COMMIT));
         var version = manuallyBumped(model.getVersion(), getCurrent(session, model));
         log("Latest released version {}", version);
-        var nextVersion = newVersion(version, branchName(getCwd(session)));
+        var nextVersion = newVersion(version, branchName(getCwd(session)), 1);
         session.getSystemProperties().setProperty(VERSION, nextVersion);
         log("Next version {}", nextVersion);
         saveValues(nextVersion, session);
