@@ -49,6 +49,7 @@ class IncrementableTest implements Incrementable {
 
     @Test
     void manuallyBumped() {
+        assertEquals("5.0.0", manuallyBumped("1.1.0-SNAPSHOT", "5.0.0"));
         assertEquals("1.1.0", manuallyBumped("1.1.0-SNAPSHOT", "1.0.555"));
         assertEquals("1.3.555", manuallyBumped("1.1.0-SNAPSHOT", "1.3.555"));
         assertEquals("1.1.0", manuallyBumped("1.1.0", "1.0.555"));
