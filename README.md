@@ -50,13 +50,33 @@ This file can be used to set the build name.
 
 ### Activation
 
-This plugin can be used to release from the command line.
-Release with `mvn deploy` or `mvn deploy:deploy`.
-For local builds with e.g. `mvn verify` no action will be taken.
+This plugin can be used to release.
+This will only set the version:
 
-It can also be used to release from a CI service.
-The plugin will try to detect this by looking at the environment variables.
-`BRANCH_NAME` (Jenkins) or `CI` (GitLab).
+```sh
+mvn nu.aron:nextversion-maven-plugin:run
+```
+
+This will set the version and deploy:
+
+```sh
+mvn nu.aron:nextversion-maven-plugin:run deploy
+```
+
+If the `~/.m2/settings.xml`file contains:
+
+```xml
+  <pluginGroups>
+    <pluginGroup>nu.aron</pluginGroup>
+  </pluginGroups>
+```
+
+It is possible to use
+
+```sh
+mvn nextversion:run deploy
+
+```
 
 ### Adding to a project
 

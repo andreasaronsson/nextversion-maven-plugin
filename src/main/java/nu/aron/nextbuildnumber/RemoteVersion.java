@@ -18,8 +18,7 @@ import static nu.aron.nextbuildnumber.Constants.log;
 interface RemoteVersion {
 
     default String getCurrent(MavenSession session, Model model) {
-        var xmlData = xmlData(session, model);
-        return versionFromString(xmlData)
+        return versionFromString(xmlData(session, model))
                 .onEmpty(() -> log("No previous release found for {}. Will use version from pom and remove \"-SNAPSHOT\"", Option.of(model.getGroupId()).getOrElse(model.getParent().getGroupId()) + ":" + model.getArtifactId(), model.getVersion()))
                 .getOrElse(removeEnd(model.getVersion(), "-SNAPSHOT"));
 
@@ -52,6 +51,9 @@ interface RemoteVersion {
     }
 
     static String substringBetween(String str, String open, String close) {
+        if (str == null || str.isEmpty()) {
+            return "";
+        }
         int start = str.indexOf(open);
         int end = str.indexOf(close, start + open.length());
         return str.substring(start + open.length(), end);

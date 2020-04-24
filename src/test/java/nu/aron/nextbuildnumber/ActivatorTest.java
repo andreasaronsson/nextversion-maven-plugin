@@ -14,7 +14,6 @@ import java.util.Properties;
 import static nu.aron.nextbuildnumber.Constants.log;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -24,8 +23,6 @@ class ActivatorTest implements Activator {
     MavenSession session;
     @Mock
     MavenExecutionRequest executionRequest;
-    @Mock
-    GetEnvPretender getEnvPretender;
     Properties userProperties = new Properties();
 
     @BeforeEach
@@ -37,35 +34,27 @@ class ActivatorTest implements Activator {
     @Test
     void skipped() {
         userProperties.put("next.skip", "true");
-        assertFalse(activated(session, getEnvPretender));
+        assertFalse(activated(session));
     }
 
     @Test
-    void localBuildNoRelease() {
+    void activeByNextVersion() {
         when(session.getRequest()).thenReturn(executionRequest);
-        when(executionRequest.getGoals()).thenReturn(List.of("verify"));
-        assertFalse(activated(session, getEnvPretender));
+        when(executionRequest.getGoals()).thenReturn(List.of("nextversion"));
+        assertTrue(activated(session));
     }
 
     @Test
-    void localBuildRelease() {
+    void activeByNextversionMavenPlugin() {
         when(session.getRequest()).thenReturn(executionRequest);
-        when(executionRequest.getGoals()).thenReturn(List.of("deploy"));
-        assertTrue(activated(session, getEnvPretender));
+        when(executionRequest.getGoals()).thenReturn(List.of("nextversion-maven-plugin"));
+        assertTrue(activated(session));
     }
 
     @Test
-    void ciBuildNoRelease() {
-        when(getEnvPretender.getenv("BRANCH_NAME")).thenReturn("master");
+    void activeByNextversionAndDeploy() {
         when(session.getRequest()).thenReturn(executionRequest);
-        when(executionRequest.getGoals()).thenReturn(List.of("deploy:deploy", "jar:jar"));
-        assertFalse(activated(session, getEnvPretender));
-    }
-
-    @Test
-    void ciBuildRelease() {
-        when(session.getRequest()).thenReturn(executionRequest);
-        lenient().when(getEnvPretender.getenv("CI")).thenReturn("");
-        assertTrue(activated(session, getEnvPretender));
+        when(executionRequest.getGoals()).thenReturn(List.of("nextversion-maven-plugin", "deploy"));
+        assertTrue(activated(session));
     }
 }

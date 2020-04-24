@@ -38,7 +38,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
     @Override
     public void afterSessionStart(MavenSession session) throws MavenExecutionException {
         AnsiConsole.systemInstall();
-        if (active.test(session, new GetEnvPretender())) {
+        if (active.test(session)) {
             log("Version will be incremented and commit property will be set.");
             doWork(this::setRevision, session);
             doWork(this::witeNewVersion, session);

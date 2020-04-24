@@ -1,5 +1,6 @@
 package nu.aron.nextbuildnumber;
 
+import io.vavr.collection.List;
 import org.apache.maven.execution.MavenSession;
 
 import java.util.Properties;
@@ -9,35 +10,20 @@ import static nu.aron.nextbuildnumber.Constants.log;
 
 interface Activator {
 
-    default boolean activated(MavenSession session, GetEnvPretender getEnvPretender) {
+    default boolean activated(MavenSession session) {
         if (skipped(session.getUserProperties())) {
             return false;
         }
-        if (!isCiBuild(getEnvPretender) && hasDeployGoal(session)) {
-            log("Activated by deploy goal. No CI detected.");
-            return true;
-        }
-        if (isCiBuild(getEnvPretender)) {
-            log("Detected CI build.");
-            if (hasDeployDeployGoal(session)) {
-                log("Using deploy:deploy assuming version already set. Skipping.");
-                return false;
-            }
+        if (hasNextGoal(session)) {
+            log("Activated by nextversion goal.");
             return true;
         }
         return false;
     }
 
-    private boolean isCiBuild(GetEnvPretender getEnvPretender) {
-        return of(getEnvPretender.getenv("BRANCH_NAME")).isDefined() || of(getEnvPretender.getenv("CI")).isDefined();
-    }
-
-    private boolean hasDeployGoal(MavenSession session) {
-        return session.getRequest().getGoals().contains("deploy");
-    }
-
-    private boolean hasDeployDeployGoal(MavenSession session) {
-        return session.getRequest().getGoals().contains("deploy:deploy");
+    private boolean hasNextGoal(MavenSession session) {
+        var goals = List.ofAll(session.getRequest().getGoals()).mkString();
+        return goals.contains("nextversion") || goals.contains("nextversion-maven-plugin");
     }
 
     private boolean skipped(Properties userProperties) {

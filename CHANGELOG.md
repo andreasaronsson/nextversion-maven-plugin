@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## 19 - 2020-04-24
+
+Now only activated by invoking the plugin with the goal "run".
+No longer starts when the prescence of env variables or certain other goals.
+
 ## [17] - 2020-04-13
 
 ### Added
