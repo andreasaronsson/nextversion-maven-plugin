@@ -77,6 +77,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         var p = new Properties();
         p.put("commit", session.getSystemProperties().get("nextversion.commit"));
         p.put("version", nextVersion);
-        Try.run(() -> p.store(new FileOutputStream("target/nextversion.properties"), null));
+        Try.run(() -> p.store(new FileOutputStream("target/nextversion.properties"), null))
+                .onFailure(e -> log("Failed to write ", e.getMessage()));
     }
 }
