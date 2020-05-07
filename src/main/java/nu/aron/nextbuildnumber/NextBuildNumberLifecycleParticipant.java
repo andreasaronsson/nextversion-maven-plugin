@@ -57,6 +57,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
     private void witeNewVersion(MavenSession session) {
         var pom = session.getRequest().getPom().getAbsoluteFile();
         var model = modelFromFile(pom, modelReader);
+        checkModel(model);
         model.getProperties().put(COMMIT, session.getSystemProperties().get(COMMIT));
         var version = manuallyBumped(model.getVersion(), getCurrent(session, model));
         log("Latest released version {}", version);
@@ -65,6 +66,13 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         log("Next version {}", nextVersion);
         saveValues(nextVersion, session);
         findModels(List.of(model), modelReader).forEach(m -> persistVersion(nextVersion, m));
+    }
+
+    private void checkModel(Model model) {
+        if (model.getVersion() == null) {
+            log("No version present in pom.");
+            throw new PluginException(new Throwable("No version"));
+        }
     }
 
     private void persistVersion(String nextVersion, Model model) {

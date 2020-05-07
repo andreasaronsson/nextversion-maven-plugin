@@ -17,6 +17,9 @@ import static nu.aron.nextbuildnumber.Constants.log;
 
 interface RemoteVersion {
 
+    String releaseOpen = "<release>";
+    String releaseClose = "</release>";
+
     default String getCurrent(MavenSession session, Model model) {
         return versionFromString(xmlData(session, model))
                 .onEmpty(() -> log("No previous release found for {}. Will use version from pom and remove \"-SNAPSHOT\"", Option.of(model.getGroupId()).getOrElse(model.getParent().getGroupId()) + ":" + model.getArtifactId(), model.getVersion()))
@@ -30,10 +33,6 @@ interface RemoteVersion {
                 .map(u -> urlFromRepo(u, model))
                 .map(this::responseToString)
                 .reject(this::notFound).toCharSeq().toString();
-    }
-
-    private Option<String> versionFromString(String data) {
-        return Option.of(substringBetween(data, "<release>", "</release>"));
     }
 
     private String urlFromRepo(String repoUrl, Model model) {
@@ -50,19 +49,25 @@ interface RemoteVersion {
         return s.contains("404 Not Found");
     }
 
-    static String substringBetween(String str, String open, String close) {
-        if (str == null || str.isEmpty()) {
-            return "";
-        }
-        int start = str.indexOf(open);
-        int end = str.indexOf(close, start + open.length());
-        return str.substring(start + open.length(), end);
-    }
-
-    static String removeEnd(String str, String remove) {
+    default String removeEnd(String str, String remove) {
         if (str.endsWith(remove)) {
             return str.substring(0, str.length() - remove.length());
         }
         return str;
+    }
+
+    default Option<String> versionFromString(String str) {
+        return validVersionInString(str).map(s -> {
+            int start = str.indexOf(releaseOpen);
+            int end = str.indexOf(releaseClose, start + releaseOpen.length());
+            return str.substring(start + releaseOpen.length(), end);
+        });
+    }
+
+    default Option<String> validVersionInString(String str) {
+        if (str.isEmpty() || !str.contains(releaseOpen) || !str.contains(releaseClose)) {
+            return Option.none();
+        }
+        return Option.of(str);
     }
 }
