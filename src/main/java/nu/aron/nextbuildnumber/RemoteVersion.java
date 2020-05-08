@@ -36,7 +36,7 @@ interface RemoteVersion {
     }
 
     private String urlFromRepo(String repoUrl, Model model) {
-        var groupId = Option.of(model.getGroupId()).getOrElse(() -> model.getParent().getGroupId());
+        var groupId = groupIdFromModel(model);
         return join("/", removeEnd(repoUrl, "/"), groupId.replace('.', '/'), model.getArtifactId(), "maven-metadata.xml");
     }
 
@@ -69,5 +69,9 @@ interface RemoteVersion {
             return Option.none();
         }
         return Option.of(str);
+    }
+
+    default String groupIdFromModel(Model model) {
+        return Option.of(model.getGroupId()).getOrElse(() -> model.getParent().getGroupId());
     }
 }

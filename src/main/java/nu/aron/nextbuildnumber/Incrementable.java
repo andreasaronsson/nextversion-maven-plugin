@@ -47,7 +47,7 @@ interface Incrementable {
 
     private boolean isManual(ArtifactVersion pom, ArtifactVersion remote) {
         if (1 == pom.compareTo(remote)) {
-            // We this this version is higher
+            // We assume this version is higher
             return isNull(pom.getQualifier()) || SNAPSHOT.equals(pom.getQualifier());
         }
         return false;

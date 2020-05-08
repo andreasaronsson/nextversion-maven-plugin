@@ -16,6 +16,7 @@ import java.io.FileOutputStream;
 import java.util.Properties;
 import java.util.function.Consumer;
 
+import static java.lang.String.join;
 import static nu.aron.nextbuildnumber.Constants.COMMIT;
 import static nu.aron.nextbuildnumber.Constants.VERSION;
 import static nu.aron.nextbuildnumber.Constants.log;
@@ -64,7 +65,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         var nextVersion = newVersion(version, branchName(getCwd(session)), 1);
         session.getSystemProperties().setProperty(VERSION, nextVersion);
         log("Next version {}", nextVersion);
-        saveValues(nextVersion, session);
+        saveValues(nextVersion, session, model);
         findModels(List.of(model), modelReader).forEach(m -> persistVersion(nextVersion, m));
     }
 
@@ -78,13 +79,15 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
     private void persistVersion(String nextVersion, Model model) {
         // This version can safely be set in all modules in a multi module build as it is never committed to VCS.
         model.setVersion(nextVersion);
-        Try.run(() -> modelWriter.write(model.getPomFile(), null, model));
+        Try.run(() -> modelWriter.write(model.getPomFile(), null, model))
+                .onFailure(e -> log("Failed to write ", e.getMessage()));
     }
 
-    private void saveValues(String nextVersion, MavenSession session) {
+    private void saveValues(String nextVersion, MavenSession session, Model model) {
         var p = new Properties();
         p.put("commit", session.getSystemProperties().get("nextversion.commit"));
         p.put("version", nextVersion);
+        p.put("gav", join(":", groupIdFromModel(model), model.getArtifactId(), nextVersion));
         Try.run(() -> p.store(new FileOutputStream("target/nextversion.properties"), null))
                 .onFailure(e -> log("Failed to write ", e.getMessage()));
     }

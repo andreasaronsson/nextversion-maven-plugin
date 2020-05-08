@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## 21 - 2020-05-08
+
+Also write the GAV to the properties file.
+
+## 20 - 2020-05-07
+
+Better error messages if version element is missing.
+
 ## 19 - 2020-04-24
 
 Now only activated by invoking the plugin with the goal "run".
