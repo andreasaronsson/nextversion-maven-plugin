@@ -1,4 +1,4 @@
-package nu.aron.nextbuildnumber;
+package nu.aron.next;
 
 import io.vavr.collection.List;
 import io.vavr.control.Option;
@@ -13,7 +13,7 @@ import static java.lang.String.join;
 import static java.net.http.HttpClient.newHttpClient;
 import static java.net.http.HttpRequest.newBuilder;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
-import static nu.aron.nextbuildnumber.Constants.log;
+import static nu.aron.next.Constants.log;
 
 interface RemoteVersion {
 
@@ -22,7 +22,7 @@ interface RemoteVersion {
 
     default String getCurrent(MavenSession session, Model model) {
         return versionFromString(xmlData(session, model))
-                .onEmpty(() -> log("No previous release found for {}. Will use version from pom and remove \"-SNAPSHOT\"", Option.of(model.getGroupId()).getOrElse(model.getParent().getGroupId()) + ":" + model.getArtifactId(), model.getVersion()))
+                .onEmpty(() -> log("No previous release found for {}. Will use version from pom and remove \"-SNAPSHOT\"", groupIdFromModel(model) + ":" + model.getArtifactId(), model.getVersion()))
                 .getOrElse(removeEnd(model.getVersion(), "-SNAPSHOT"));
 
     }

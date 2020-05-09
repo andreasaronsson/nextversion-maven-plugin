@@ -1,4 +1,4 @@
-package nu.aron.nextbuildnumber;
+package nu.aron.next;
 
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
@@ -6,9 +6,9 @@ import org.apache.maven.artifact.versioning.DefaultArtifactVersion;
 import static java.lang.String.format;
 import static java.lang.String.valueOf;
 import static java.util.Objects.isNull;
-import static nu.aron.nextbuildnumber.Constants.MASTER;
-import static nu.aron.nextbuildnumber.Constants.SNAPSHOT;
-import static nu.aron.nextbuildnumber.Constants.log;
+import static nu.aron.next.Constants.MASTER;
+import static nu.aron.next.Constants.SNAPSHOT;
+import static nu.aron.next.Constants.log;
 import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 interface Incrementable {

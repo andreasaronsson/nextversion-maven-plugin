@@ -1,4 +1,4 @@
-package nu.aron.nextbuildnumber;
+package nu.aron.next;
 
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Properties;
 
-import static nu.aron.nextbuildnumber.Constants.log;
+import static nu.aron.next.Constants.log;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
@@ -38,6 +38,13 @@ class ActivatorTest implements Activator {
     }
 
     @Test
+    void activeByNuAronNextRun() {
+        when(session.getRequest()).thenReturn(executionRequest);
+        when(executionRequest.getGoals()).thenReturn(List.of("nu.aron:next:run"));
+        assertTrue(activated(session));
+    }
+
+    @Test
     void activeByNextVersion() {
         when(session.getRequest()).thenReturn(executionRequest);
         when(executionRequest.getGoals()).thenReturn(List.of("nextversion"));
@@ -52,9 +59,17 @@ class ActivatorTest implements Activator {
     }
 
     @Test
-    void activeByNextversionAndDeploy() {
+    void activeByNextversionAndRun() {
         when(session.getRequest()).thenReturn(executionRequest);
-        when(executionRequest.getGoals()).thenReturn(List.of("nextversion-maven-plugin", "deploy"));
+        when(executionRequest.getGoals()).thenReturn(List.of("nextversion-maven-plugin:run"));
         assertTrue(activated(session));
     }
+
+    @Test
+    void activeByNextversionFQCN() {
+        when(session.getRequest()).thenReturn(executionRequest);
+        when(executionRequest.getGoals()).thenReturn(List.of("nu.aron:nextversion-maven-plugin:run"));
+        assertTrue(activated(session));
+    }
+
 }

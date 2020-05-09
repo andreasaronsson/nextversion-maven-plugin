@@ -30,10 +30,11 @@ An existing -SNAPSHOT substring will be removed.
 
 If you wish to increment a major or minor number.
 It is possible to set a newer version.
-The plugin will cound upwards from that.
-Given latest release version is `1.59`.
-When version `2.0-SNAPSHOT` is set in the pom.
-Then nextversion-maven-plugin will use version `2.0`.
+The plugin will count upwards from that.
+
+*Given* latest release version is `1.59`.
+*When* version `2.0-SNAPSHOT` is set in the pom.
+*Then* nextversion-maven-plugin will use version `2.0`.
 
 ## Traceability
 
@@ -44,7 +45,8 @@ Set as maven system properties `${nextversion.commit}` and `${nextversion.versio
 These values are intended to be used in the jar MANIFEST.MF or the like.
 They are also added to the deployed pom file.
 Both properties are written to `target/nextversion.properties`.
-This file can be used to set the build name.
+Also GAV, artifactId and groupId are written to the same properties file.
+This file can be used e.g. to set the build name.
 
 ## Usage
 
@@ -54,13 +56,19 @@ This plugin can be used to release.
 This will only set the version:
 
 ```sh
+mvn nu.aron:next:run
+```
+
+Alternatively
+
+```sh
 mvn nu.aron:nextversion-maven-plugin:run
 ```
 
 This will set the version and deploy:
 
 ```sh
-mvn nu.aron:nextversion-maven-plugin:run deploy
+mvn nu.aron:next:run deploy
 ```
 
 If the `~/.m2/settings.xml`file contains:
@@ -74,7 +82,7 @@ If the `~/.m2/settings.xml`file contains:
 It is possible to use
 
 ```sh
-mvn nextversion:run deploy
+mvn next:run deploy
 
 ```
 

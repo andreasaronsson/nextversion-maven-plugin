@@ -1,4 +1,4 @@
-package nu.aron.nextbuildnumber;
+package nu.aron.next;
 
 class PluginException extends RuntimeException {
     final Throwable throwable;

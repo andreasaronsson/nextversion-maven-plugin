@@ -1,4 +1,4 @@
-package nu.aron.nextbuildnumber;
+package nu.aron.next;
 
 import io.vavr.control.Option;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package nu.aron.nextbuildnumber;
+package nu.aron.next;
 
 import org.apache.maven.execution.MavenSession;
 

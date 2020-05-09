@@ -1,4 +1,4 @@
-package nu.aron.nextbuildnumber;
+package nu.aron.next;
 
 import io.vavr.control.Try;
 import org.apache.maven.shared.utils.cli.CommandLineUtils;

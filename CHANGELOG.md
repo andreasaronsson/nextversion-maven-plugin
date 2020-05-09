@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## 22 - 2020-05-09
+
+- Changed activation criteria
+- Create target directory if not exist
+
 ## 21 - 2020-05-08
 
 Also write the GAV to the properties file.

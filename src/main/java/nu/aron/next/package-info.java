@@ -5,6 +5,6 @@
  * also finds the sha checksum (git).
  */
 @ParametersAreNonnullByDefault
-package nu.aron.nextbuildnumber;
+package nu.aron.next;
 
 import javax.annotation.ParametersAreNonnullByDefault;

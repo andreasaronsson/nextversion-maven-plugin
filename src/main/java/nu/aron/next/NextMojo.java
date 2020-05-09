@@ -1,4 +1,4 @@
-package nu.aron.nextbuildnumber;
+package nu.aron.next;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 
 import org.apache.maven.plugin.AbstractMojo;

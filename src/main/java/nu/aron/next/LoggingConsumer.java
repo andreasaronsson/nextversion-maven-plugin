@@ -1,8 +1,8 @@
-package nu.aron.nextbuildnumber;
+package nu.aron.next;
 
 import org.apache.maven.shared.utils.cli.CommandLineUtils.StringStreamConsumer;
 
-import static nu.aron.nextbuildnumber.Constants.logger;
+import static nu.aron.next.Constants.logger;
 
 class LoggingConsumer extends StringStreamConsumer {
     @Override

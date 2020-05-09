@@ -1,4 +1,4 @@
-package nu.aron.nextbuildnumber;
+package nu.aron.next;
 
 import io.vavr.collection.List;
 import org.apache.maven.execution.MavenSession;
@@ -6,7 +6,9 @@ import org.apache.maven.execution.MavenSession;
 import java.util.Properties;
 
 import static io.vavr.control.Option.of;
-import static nu.aron.nextbuildnumber.Constants.log;
+import static java.lang.String.join;
+import static nu.aron.next.Constants.NEXTVERSION_MAVEN_PLUGIN;
+import static nu.aron.next.Constants.log;
 
 interface Activator {
 
@@ -22,8 +24,9 @@ interface Activator {
     }
 
     private boolean hasNextGoal(MavenSession session) {
-        var goals = List.ofAll(session.getRequest().getGoals()).mkString();
-        return goals.contains("nextversion") || goals.contains("nextversion-maven-plugin");
+        var commandlineGoals = List.ofAll(session.getRequest().getGoals());
+        var activationGoals = List.of("nextversion", NEXTVERSION_MAVEN_PLUGIN, join(":", "nu.aron", NEXTVERSION_MAVEN_PLUGIN, "run"), join(":", NEXTVERSION_MAVEN_PLUGIN, "run"),"nu.aron:next:run");
+        return !activationGoals.retainAll(commandlineGoals).isEmpty();
     }
 
     private boolean skipped(Properties userProperties) {
