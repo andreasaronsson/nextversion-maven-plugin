@@ -4,8 +4,9 @@
 
 [![Download](https://api.bintray.com/packages/aron/maven/nextversion-maven-plugin/images/download.svg)](https://bintray.com/aron/maven/nextversion-maven-plugin/_latestVersion)
 
-Java 11+.
+This plugin can be used to release.
 Increments versions CD style.
+Java 11+.
 Queries the deployment repo to know 'previous version'.
 Then increments the version number.
 Changes in pom.xml are not checked in.
@@ -46,29 +47,31 @@ These values are intended to be used in the jar MANIFEST.MF or the like.
 They are also added to the deployed pom file.
 Both properties are written to `target/nextversion.properties`.
 Also GAV, artifactId and groupId are written to the same properties file.
-This file can be used e.g. to set the build name.
 
 ## Usage
 
 ### Activation
 
-This plugin can be used to release.
-This will only set the version:
+The `target/nextversion.properties` file is always written.
 
+When maven is invoked with `nu.aron:nextversion-maven-plugin:run` on the command line.
+The plugin will query the binary repository to find out what the next version shall be.
+Then the pom file will be modified.
+Then the `target/nextversion.properties` will be written with the same properties.
+
+Without `nu.aron:nextversion-maven-plugin:run` the version will be taken from the pom file.
+The `target/nextversion.properties` will contain the same values except version.
+
+Hence,
 ```sh
-mvn nu.aron:next:run
+mvn nu.aron:nextversion-maven-plugin:run validate
 ```
-
-Alternatively
-
-```sh
-mvn nu.aron:nextversion-maven-plugin:run
-```
+will query the binary repo then write pom and `target/nextversion.properties`.
 
 This will set the version and deploy:
 
 ```sh
-mvn nu.aron:next:run deploy
+mvn nu.aron:nextversion-maven-plugin:run deploy
 ```
 
 If the `~/.m2/settings.xml`file contains:
@@ -82,7 +85,7 @@ If the `~/.m2/settings.xml`file contains:
 It is possible to use
 
 ```sh
-mvn next:run deploy
+mvn  nextversion:run deploy
 
 ```
 

@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## 23 - 2020-05-16
+
+- Always write the nextversion.properties file
+
 ## 22 - 2020-05-09
 
 - Changed activation criteria

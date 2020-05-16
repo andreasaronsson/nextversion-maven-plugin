@@ -15,6 +15,7 @@ class Constants {
     static final String EMPTY = "";
     static final String VERSION = "version";
     static final String COMMIT = "commit";
+    static final String RUN = "run";
     static final String NEXT_COMMIT = "nextversion.commit";
     static final String NEXT_VERSION = "nextversion.version";
     static final String MASTER = "master";
@@ -25,7 +26,7 @@ class Constants {
     static final String GROUP_ID = "groupId";
     static final String NEXTVERSION_MAVEN_PLUGIN = "nextversion-maven-plugin";
     static Logger logger = LoggerFactory.getLogger(NEXTVERSION_MAVEN_PLUGIN);
-    private static final String LOGNAME = join(":", NEXTVERSION_MAVEN_PLUGIN, version(), "run");
+    private static final String LOGNAME = join(":", NEXTVERSION_MAVEN_PLUGIN, version(), RUN);
 
     private Constants() {
         // Hide the public constructor

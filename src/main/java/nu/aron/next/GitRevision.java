@@ -10,7 +10,7 @@ import static nu.aron.next.CurrentWorkingDirectory.getCwd;
 
 interface GitRevision {
 
-    default void setRevision(MavenSession session) {
+    default void revision(MavenSession session) {
         logAndSetProperty(session, run(getCwd(session), GIT_REVISION));
     }
 

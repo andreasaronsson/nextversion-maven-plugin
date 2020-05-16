@@ -18,6 +18,7 @@ import java.util.Properties;
 import java.util.function.Consumer;
 
 import static java.lang.String.join;
+import static java.util.Objects.isNull;
 import static nu.aron.next.Constants.ARTIFACT_ID;
 import static nu.aron.next.Constants.COMMIT;
 import static nu.aron.next.Constants.GROUP_ID;
@@ -45,11 +46,9 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
     @Override
     public void afterSessionStart(MavenSession session) throws MavenExecutionException {
         AnsiConsole.systemInstall();
-        if (active.test(session)) {
-            log("Version will be incremented and commit property will be set.");
-            doWork(this::setRevision, session);
-            doWork(this::witeNewVersion, session);
-        }
+        doWork(this::revision, session);
+        doWork(this::version, session);
+        doWork(this::write, session);
         AnsiConsole.systemUninstall();
     }
 
@@ -61,23 +60,30 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         }
     }
 
-    private void witeNewVersion(MavenSession session) {
+    private void version(MavenSession session) {
         var pom = session.getRequest().getPom().getAbsoluteFile();
         var model = modelFromFile(pom, modelReader);
         checkModel(model);
-        model.getProperties().put(NEXT_COMMIT, session.getSystemProperties().get(NEXT_COMMIT));
-        var version = manuallyBumped(model.getVersion(), getCurrent(session, model));
-        log("Latest released version {}", version);
-        var nextVersion = newVersion(version, branchName(getCwd(session)), 1);
-        session.getSystemProperties().setProperty(NEXT_VERSION, nextVersion);
-        log("Next version {}", nextVersion);
+        if (active.test(session)) {
+            var version = manuallyBumped(model.getVersion(), getCurrent(session, model));
+            log("Latest released version {}", version);
+            var nextVersion = newVersion(version, branchName(getCwd(session)), 1);
+            session.getSystemProperties().setProperty(NEXT_VERSION, nextVersion);
+            log("Next version {}", nextVersion);
+        }
+    }
+
+    private void write(MavenSession session) {
+        var pom = session.getRequest().getPom().getAbsoluteFile();
+        var model = modelFromFile(pom, modelReader);
+        String nextVersion = session.getSystemProperties().getProperty(NEXT_VERSION, model.getVersion());
         saveValues(nextVersion, session, model);
         findModels(List.of(model), modelReader).forEach(m -> persistVersion(nextVersion, m));
     }
 
     private void checkModel(Model model) {
-        if (model.getVersion() == null) {
-            log("No version present in pom.");
+        if (isNull(model.getVersion())) {
+            logError("No version present in pom.");
             throw new PluginException(new Throwable("No version"));
         }
     }
@@ -86,7 +92,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         // This version can safely be set in all modules in a multi module build as it is never committed to VCS.
         model.setVersion(nextVersion);
         Try.run(() -> modelWriter.write(model.getPomFile(), null, model))
-                .onFailure(e -> log("Failed to write ", e.getMessage()));
+                .onFailure(e -> logError("Failed to write ", e.getMessage()));
     }
 
     private void saveValues(String nextVersion, MavenSession session, Model model) {
@@ -102,6 +108,6 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
             throw new PluginException(new IllegalStateException("Unable to create target directory"));
         }
         Try.run(() -> p.store(new FileOutputStream("target/nextversion.properties"), null))
-                .onFailure(e -> log("Failed to write ", e.getMessage()));
+                .onFailure(e -> logError("Failed to write ", e.getMessage()));
     }
 }

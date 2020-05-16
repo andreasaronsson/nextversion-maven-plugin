@@ -8,6 +8,7 @@ import java.util.Properties;
 import static io.vavr.control.Option.of;
 import static java.lang.String.join;
 import static nu.aron.next.Constants.NEXTVERSION_MAVEN_PLUGIN;
+import static nu.aron.next.Constants.RUN;
 import static nu.aron.next.Constants.log;
 
 interface Activator {
@@ -25,7 +26,7 @@ interface Activator {
 
     private boolean hasNextGoal(MavenSession session) {
         var commandlineGoals = List.ofAll(session.getRequest().getGoals());
-        var activationGoals = List.of("nextversion", NEXTVERSION_MAVEN_PLUGIN, join(":", "nu.aron", NEXTVERSION_MAVEN_PLUGIN, "run"), join(":", NEXTVERSION_MAVEN_PLUGIN, "run"),"nu.aron:next:run");
+        var activationGoals = List.of("nextversion", NEXTVERSION_MAVEN_PLUGIN, join(":", "nu.aron", NEXTVERSION_MAVEN_PLUGIN, RUN), join(":", NEXTVERSION_MAVEN_PLUGIN, RUN),"nu.aron:next:run");
         return !activationGoals.retainAll(commandlineGoals).isEmpty();
     }
 
