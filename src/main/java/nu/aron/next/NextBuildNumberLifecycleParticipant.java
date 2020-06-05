@@ -62,8 +62,13 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
 
     private void version(MavenSession session) {
         var pom = session.getRequest().getPom().getAbsoluteFile();
-        var model = modelFromFile(pom, modelReader);
-        checkModel(model);
+        var model = modelFromFile(pom, modelReader).getOrElse(new Model());
+        if (isEmptyModel(model)) {
+            log("Unable to create maven model. Skipping.");
+            session.getUserProperties().put("next.skip", "true");
+        } else {
+            checkVersionPresent(model);
+        }
         if (active.test(session)) {
             var version = manuallyBumped(model.getVersion(), getCurrent(session, model));
             log("Latest released version {}", version);
@@ -73,15 +78,21 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         }
     }
 
-    private void write(MavenSession session) {
-        var pom = session.getRequest().getPom().getAbsoluteFile();
-        var model = modelFromFile(pom, modelReader);
-        String nextVersion = session.getSystemProperties().getProperty(NEXT_VERSION, model.getVersion());
-        saveValues(nextVersion, session, model);
-        findModels(List.of(model), modelReader).forEach(m -> persistVersion(nextVersion, m));
+    private boolean isEmptyModel(Model model) {
+        return "[inherited]:null:jar:[inherited]".equals(model.toString());
     }
 
-    private void checkModel(Model model) {
+    private void write(MavenSession session) {
+        if (active.test(session)) {
+            var pom = session.getRequest().getPom().getAbsoluteFile();
+            var model = modelFromFile(pom, modelReader).get();
+            String nextVersion = session.getSystemProperties().getProperty(NEXT_VERSION, model.getVersion());
+            saveValues(nextVersion, session, model);
+            findModels(List.of(model), modelReader).forEach(m -> persistVersion(nextVersion, m));
+        }
+    }
+
+    private void checkVersionPresent(Model model) {
         if (isNull(model.getVersion())) {
             logError("No version present in pom.");
             throw new PluginException(new Throwable("No version"));

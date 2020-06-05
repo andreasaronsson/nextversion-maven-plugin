@@ -1,6 +1,7 @@
 package nu.aron.next;
 
 import io.vavr.collection.List;
+import io.vavr.control.Option;
 import io.vavr.control.Try;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.ModelReader;
@@ -15,10 +16,10 @@ interface Modelbuilder {
         if (models.isEmpty()) {
             return models;
         }
-        return models.appendAll(findModels(models.map(this::fromModel).flatMap(identity()).map(f -> modelFromFile(f, modelReader)), modelReader));
+        return models.appendAll(findModels(models.map(this::fromModel).flatMap(identity()).flatMap(f -> modelFromFile(f, modelReader)), modelReader));
     }
 
-    default Model modelFromFile(File file, ModelReader modelReader) {
+    default Option<Model> modelFromFile(File file, ModelReader modelReader) {
         if (file.isDirectory()) {
             return modelFromPom(file.toPath().resolve("pom.xml").toFile(), modelReader);
         }
@@ -29,7 +30,7 @@ interface Modelbuilder {
         return List.ofAll(m.getModules()).map(module -> Paths.get(m.getProjectDirectory().toString(), module).toFile());
     }
 
-    private Model modelFromPom(File pom, ModelReader modelReader) {
-        return Try.of(() -> modelReader.read(pom, null)).getOrElseThrow(PluginException::new);
+    private Option<Model> modelFromPom(File pom, ModelReader modelReader) {
+        return Try.of(() -> modelReader.read(pom, null)).toOption();
     }
 }

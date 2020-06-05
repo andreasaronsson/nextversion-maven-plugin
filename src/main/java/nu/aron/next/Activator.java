@@ -15,6 +15,7 @@ interface Activator {
 
     default boolean activated(MavenSession session) {
         if (skipped(session.getUserProperties())) {
+            log("Skip.");
             return false;
         }
         if (hasNextGoal(session)) {
