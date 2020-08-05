@@ -9,7 +9,7 @@ import java.io.File;
 
 interface CommandInDirectory {
     static String run(File workingDirectory, String command) {
-        Commandline cl = new Commandline(command);
+        Commandline cl = Try.of(() -> new Commandline(command)).getOrElseThrow(e -> new RuntimeException(e));
         cl.setWorkingDirectory(workingDirectory);
         StringStreamConsumer stdout = new StringStreamConsumer();
         Try.of(() -> CommandLineUtils.executeCommandLine(cl, stdout, new LoggingConsumer()))
