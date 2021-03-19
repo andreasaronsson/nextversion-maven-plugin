@@ -10,12 +10,39 @@
   <artifactId>nextversion-maven-plugin</artifactId>
   <version>26-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
+  <url>https://github.com/andreasaronsson/nextversion-maven-plugin</url>
+  <name>${project.groupId}:${project.artifactId}</name>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  <developers>
+    <developer>
+      <name>Andreas Aronsson</name>
+      <email>aron@aron.nu</email>
+      <organization>aron.nu</organization>
+      <organizationUrl>http://www.aron.nu</organizationUrl>
+    </developer>
+  </developers>
   <scm>
     <connection>scm:git:git@github.com:andreasaronsson/nextversion-maven-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:andreasaronsson/nextversion-maven-plugin.git</developerConnection>
     <tag>HEAD</tag>
     <url>https://github.com/andreasaronsson/nextversion-maven-plugin</url>
   </scm>
+  <distributionManagement>
+    <repository>
+      <id>ossrh</id>
+      <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2</url>
+    </repository>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+  </distributionManagement>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -142,13 +169,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <repositories>
-    <repository>
-      <id>jcenter</id>
-      <name>bintray</name>
-      <url>https://jcenter.bintray.com</url>
-    </repository>
-  </repositories>
   <build>
     <pluginManagement>
       <plugins>
@@ -176,12 +196,34 @@
     </pluginManagement>
     <plugins>
       <plugin>
+        <groupId>org.sonatype.plugins</groupId>
+        <artifactId>nexus-staging-maven-plugin</artifactId>
+        <version>1.6.8</version>
+        <extensions>true</extensions>
+        <configuration>
+          <serverId>ossrh</serverId>
+          <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+          <autoReleaseAfterClose>true</autoReleaseAfterClose>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>versions-maven-plugin</artifactId>
         <version>2.8.1</version>
         <configuration>
           <rulesUri>https://raw.githubusercontent.com/andreasaronsson/versions-rules/master/versions-rules.xml</rulesUri>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
