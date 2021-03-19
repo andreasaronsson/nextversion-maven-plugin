@@ -131,3 +131,9 @@ In order to stamp the jar with the git checksum configure the maven-jar-plugin:
 * Add autorelease for this project
 * Verify functionality with Artifactory
 * Verify functionality with GitLab
+
+## Release to maven central
+
+```
+mvn -DperformRelease=true deploy
+```
