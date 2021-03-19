@@ -8,7 +8,7 @@
     <relativePath></relativePath>
   </parent>
   <artifactId>nextversion-maven-plugin</artifactId>
-  <version>26-SNAPSHOT</version>
+  <version>27</version>
   <packaging>maven-plugin</packaging>
   <url>https://github.com/andreasaronsson/nextversion-maven-plugin</url>
   <name>${project.groupId}:${project.artifactId}</name>
