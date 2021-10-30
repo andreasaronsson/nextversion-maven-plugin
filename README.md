@@ -132,6 +132,12 @@ In order to stamp the jar with the git checksum configure the maven-jar-plugin:
 * Verify functionality with Artifactory
 * Verify functionality with GitLab
 
+## gpg
+
+```
+gpg --keyserver --send-key <key>
+```
+
 ## Release to maven central
 
 ```
