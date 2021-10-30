@@ -141,5 +141,5 @@ gpg --keyserver --send-key <key>
 ## Release to maven central
 
 ```
-mvn -DperformRelease=true deploy
+mvn -DperformRelease=true clean deploy
 ```
