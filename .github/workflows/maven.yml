@@ -23,7 +23,7 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '11'
-    - Name: Get latest deps
+    - name: Get latest deps
       if: github.event_name == 'schedule'
       run: mvn -B versions:update-parent versions:use-latest-versions
     - name: Build with Maven
