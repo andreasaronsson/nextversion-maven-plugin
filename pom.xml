@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.aron</groupId>
     <artifactId>maven-plugins</artifactId>
-    <version>26</version>
+    <version>27</version>
     <relativePath></relativePath>
   </parent>
   <artifactId>nextversion-maven-plugin</artifactId>
@@ -90,17 +90,17 @@
         <artifactId>org.eclipse.sisu.inject</artifactId>
         <version>0.3.5</version>
       </dependency>
-      <dependency>
-        <groupId>com.google.inject</groupId>
-        <artifactId>guice</artifactId>
-        <version>4.2.2</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.inject</groupId>
-        <artifactId>guice</artifactId>
-        <version>4.2.2</version>
-        <classifier>no_aop</classifier>
-      </dependency>
+      <!-- <dependency> -->
+      <!--   <groupId>com.google.inject</groupId> -->
+      <!--   <artifactId>guice</artifactId> -->
+      <!--   <version>4.2.2</version> -->
+      <!-- </dependency> -->
+      <!-- <dependency> -->
+      <!--   <groupId>com.google.inject</groupId> -->
+      <!--   <artifactId>guice</artifactId> -->
+      <!--   <version>4.2.2</version> -->
+      <!--   <classifier>no_aop</classifier> -->
+      <!-- </dependency> -->
     </dependencies>
   </dependencyManagement>
   <dependencies>
@@ -226,7 +226,7 @@
                 <requireJavaVersion>
                   <version>11</version>
                 </requireJavaVersion>
-                <dependencyConvergence></dependencyConvergence>
+                <!-- <dependencyConvergence></dependencyConvergence> -->
               </rules>
             </configuration>
           </execution>
