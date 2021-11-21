@@ -12,9 +12,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       with:
-        fetch-depth: 2
         ref: ${{ github.head_ref }}
-    - run: git checkout HEAD^
     - uses: actions/cache@v2
       with:
         path: ~/.m2/repository
