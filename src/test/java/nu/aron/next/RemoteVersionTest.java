@@ -11,6 +11,6 @@ class RemoteVersionTest implements RemoteVersion {
     void validVersionInString() {
         assertEquals(Option.none(), versionFromString(""));
         assertEquals(Option.none(), versionFromString("some nonsense"));
-        assertEquals("1", versionFromString(releaseOpen + "1" + releaseClose).get());
+        assertEquals("1", versionFromString(RELEASE_OPEN + "1" + RELEASE_CLOSE).get());
     }
 }

@@ -5,6 +5,8 @@ import org.apache.maven.execution.MavenSession;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -37,39 +39,11 @@ class ActivatorTest implements Activator {
         assertFalse(activated(session));
     }
 
-    @Test
-    void activeByNuAronNextRun() {
+    @ParameterizedTest
+    @ValueSource( strings =  {"nu.aron:next:run", "nextversion", "nextversion-maven-plugin", "nextversion-maven-plugin:run", "nu.aron:nextversion-maven-plugin:run"})
+    void activeBy(String goal) {
         when(session.getRequest()).thenReturn(executionRequest);
-        when(executionRequest.getGoals()).thenReturn(List.of("nu.aron:next:run"));
+        when(executionRequest.getGoals()).thenReturn(List.of(goal));
         assertTrue(activated(session));
     }
-
-    @Test
-    void activeByNextVersion() {
-        when(session.getRequest()).thenReturn(executionRequest);
-        when(executionRequest.getGoals()).thenReturn(List.of("nextversion"));
-        assertTrue(activated(session));
-    }
-
-    @Test
-    void activeByNextversionMavenPlugin() {
-        when(session.getRequest()).thenReturn(executionRequest);
-        when(executionRequest.getGoals()).thenReturn(List.of("nextversion-maven-plugin"));
-        assertTrue(activated(session));
-    }
-
-    @Test
-    void activeByNextversionAndRun() {
-        when(session.getRequest()).thenReturn(executionRequest);
-        when(executionRequest.getGoals()).thenReturn(List.of("nextversion-maven-plugin:run"));
-        assertTrue(activated(session));
-    }
-
-    @Test
-    void activeByNextversionFQCN() {
-        when(session.getRequest()).thenReturn(executionRequest);
-        when(executionRequest.getGoals()).thenReturn(List.of("nu.aron:nextversion-maven-plugin:run"));
-        assertTrue(activated(session));
-    }
-
 }
