@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.aron</groupId>
     <artifactId>maven-plugins</artifactId>
-    <version>27</version>
+    <version>29</version>
     <relativePath></relativePath>
   </parent>
   <artifactId>nextversion-maven-plugin</artifactId>
@@ -87,22 +87,6 @@
         <artifactId>maven-shared-utils</artifactId>
         <version>3.3.4</version>
       </dependency>
-      <dependency>
-        <groupId>org.eclipse.sisu</groupId>
-        <artifactId>org.eclipse.sisu.inject</artifactId>
-        <version>0.3.5</version>
-      </dependency>
-      <!-- <dependency> -->
-      <!-- <groupId>com.google.inject</groupId> -->
-      <!-- <artifactId>guice</artifactId> -->
-      <!-- <version>4.2.2</version> -->
-      <!-- </dependency> -->
-      <!-- <dependency> -->
-      <!-- <groupId>com.google.inject</groupId> -->
-      <!-- <artifactId>guice</artifactId> -->
-      <!-- <version>4.2.2</version> -->
-      <!-- <classifier>no_aop</classifier> -->
-      <!-- </dependency> -->
     </dependencies>
   </dependencyManagement>
   <dependencies>
@@ -110,20 +94,24 @@
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
       <version>3.8.5</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-model</artifactId>
       <version>3.8.5</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-artifact</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>maven-model-builder</artifactId>
       <version>3.8.5</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.maven.shared</groupId>
