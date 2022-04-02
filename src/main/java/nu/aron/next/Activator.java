@@ -27,7 +27,7 @@ interface Activator {
 
     private boolean hasNextGoal(MavenSession session) {
         var commandlineGoals = List.ofAll(session.getRequest().getGoals());
-        var activationGoals = List.of("nextversion", NEXTVERSION_MAVEN_PLUGIN, join(":", "nu.aron", NEXTVERSION_MAVEN_PLUGIN, RUN), join(":", NEXTVERSION_MAVEN_PLUGIN, RUN),"nu.aron:next:run");
+        var activationGoals = List.of("nextversion", NEXTVERSION_MAVEN_PLUGIN, join(":", "nu.aron", NEXTVERSION_MAVEN_PLUGIN, RUN), join(":", NEXTVERSION_MAVEN_PLUGIN, RUN), "nu.aron:next:run");
         return !activationGoals.retainAll(commandlineGoals).isEmpty();
     }
 

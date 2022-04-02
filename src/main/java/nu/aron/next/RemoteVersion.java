@@ -17,8 +17,8 @@ import static nu.aron.next.Constants.log;
 
 interface RemoteVersion {
 
-	static final String RELEASE_OPEN = "<release>";
-    static final String RELEASE_CLOSE = "</release>";
+    String RELEASE_OPEN = "<release>";
+    String RELEASE_CLOSE = "</release>";
 
     default String getCurrent(MavenSession session, Model model) {
         return versionFromString(xmlData(session, model))
@@ -65,7 +65,7 @@ interface RemoteVersion {
     }
 
     default Option<String> validVersionInString(String str) {
-        if (str.isEmpty() || !str.contains(RELEASE_OPEN) || !str.contains(RELEASE_CLOSE)) {
+        if (!str.contains(RELEASE_OPEN) || !str.contains(RELEASE_CLOSE)) {
             return Option.none();
         }
         return Option.of(str);

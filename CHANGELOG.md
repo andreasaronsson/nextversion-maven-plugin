@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 31 - 2022-04-02
+
+No longer requires git binary.
+Find default branch name instead of hard coded `master`.
+
+## 30 - 2022-04-01
+
+3PP versions bumped.
+
 ## 27 - 2021-10-30
 
 3PP versions bumped.

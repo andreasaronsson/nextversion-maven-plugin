@@ -12,6 +12,7 @@ import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.component.annotations.Requirement;
 import org.fusesource.jansi.AnsiConsole;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -20,7 +21,6 @@ import java.util.function.Consumer;
 import static java.lang.String.join;
 import static java.util.Objects.isNull;
 import static nu.aron.next.Constants.ARTIFACT_ID;
-import static nu.aron.next.Constants.COMMIT;
 import static nu.aron.next.Constants.GROUP_ID;
 import static nu.aron.next.Constants.NEXT_COMMIT;
 import static nu.aron.next.Constants.NEXT_VERSION;
@@ -35,13 +35,13 @@ import static nu.aron.next.CurrentWorkingDirectory.getCwd;
  */
 @Component(role = AbstractMavenLifecycleParticipant.class, hint = "NextBuildNumberLifecycleParticipant")
 public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleParticipant implements Incrementable,
-        GitRevision, RemoteVersion, Activator, BranchName, Modelbuilder {
+        GitRevision, RemoteVersion, Activator, Branch, Modelbuilder {
 
+    private final Activation active = this::activated;
     @Requirement
     private ModelWriter modelWriter;
     @Requirement
     private ModelReader modelReader;
-    private final Activation active = this::activated;
 
     @Override
     public void afterSessionStart(MavenSession session) throws MavenExecutionException {
@@ -72,7 +72,8 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         if (active.test(session)) {
             var version = manuallyBumped(model.getVersion(), getCurrent(session, model));
             log("Latest released version {}", version);
-            var nextVersion = newVersion(version, branchName(getCwd(session)), 1);
+            File cwd = getCwd(session);
+            var nextVersion = newVersion(version, name(cwd), defaultName(cwd), 1);
             session.getSystemProperties().setProperty(NEXT_VERSION, nextVersion);
             log("Next version {}", nextVersion);
         }
@@ -108,7 +109,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
 
     private void saveValues(String nextVersion, MavenSession session, Model model) {
         var p = new Properties();
-        p.put(COMMIT, session.getSystemProperties().get(NEXT_COMMIT));
+        p.put("commit", session.getSystemProperties().get(NEXT_COMMIT));
         p.put(VERSION, nextVersion);
         p.put(ARTIFACT_ID, model.getArtifactId());
         p.put(GROUP_ID, groupIdFromModel(model));

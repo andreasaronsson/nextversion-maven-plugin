@@ -1,22 +1,21 @@
 package nu.aron.next;
 
+import io.vavr.control.Try;
 import org.apache.maven.execution.MavenSession;
 
-import static nu.aron.next.CommandInDirectory.run;
-import static nu.aron.next.Constants.NEXT_COMMIT;
-import static nu.aron.next.Constants.GIT_REVISION;
-import static nu.aron.next.Constants.log;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 import static nu.aron.next.CurrentWorkingDirectory.getCwd;
 
-interface GitRevision {
+interface GitRevision extends LogAndSet, Branch {
 
     default void revision(MavenSession session) {
-        logAndSetProperty(session, run(getCwd(session), GIT_REVISION));
-    }
-
-    private void logAndSetProperty(MavenSession session, String value) {
-        session.getSystemProperties().setProperty(NEXT_COMMIT, value);
-        session.getUserProperties().setProperty(NEXT_COMMIT, value);
-        log("System property {} set to {}", NEXT_COMMIT, value);
+        File cwd = getCwd(session);
+        Path p = cwd.toPath().resolve(".git").resolve("refs").resolve("heads").resolve(name(cwd));
+        String rev = Try.of(() -> Files.readString(p)).
+                getOrElseThrow(PluginException::new).trim();
+        put(session, rev);
     }
 }
