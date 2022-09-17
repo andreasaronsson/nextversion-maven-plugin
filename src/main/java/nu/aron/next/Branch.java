@@ -9,9 +9,13 @@ import static nu.aron.next.Constants.EMPTY;
 
 interface Branch {
     default String name(File directory) {
-        return Try.of(() -> Files.readString(directory.toPath().
+        String head = Try.of(() -> Files.readString(directory.toPath().
                         resolve(".git").resolve("HEAD"))).
-                getOrElseThrow(PluginException::new).replace("ref: refs/heads/", EMPTY).trim();
+                getOrElseThrow(PluginException::new);
+        if (head.contains("ref")) {
+            return head.replace("ref: refs/heads/", EMPTY).trim();
+        }
+        return "HEAD";
     }
 
     default String defaultName(File directory) {
