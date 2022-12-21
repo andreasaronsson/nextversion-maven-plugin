@@ -4,11 +4,11 @@
   <parent>
     <groupId>nu.aron</groupId>
     <artifactId>maven-plugins</artifactId>
-    <version>29</version>
+    <version>30</version>
     <relativePath/>
   </parent>
   <artifactId>nextversion-maven-plugin</artifactId>
-  <version>32</version>
+  <version>33</version>
   <packaging>maven-plugin</packaging>
   <name>${project.groupId}:${project.artifactId}</name>
   <url>https://github.com/andreasaronsson/nextversion-maven-plugin</url>
