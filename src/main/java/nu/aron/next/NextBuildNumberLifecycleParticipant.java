@@ -28,6 +28,7 @@ import static nu.aron.next.Constants.VERSION;
 import static nu.aron.next.Constants.log;
 import static nu.aron.next.Constants.logError;
 import static nu.aron.next.CurrentWorkingDirectory.getCwd;
+import static org.apache.maven.shared.utils.StringUtils.isEmpty;
 
 /**
  * Queries the deployment repo for current latest version.
@@ -42,7 +43,6 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
     private ModelWriter modelWriter;
     @Requirement
     private ModelReader modelReader;
-
     @Override
     public void afterSessionStart(MavenSession session) throws MavenExecutionException {
         AnsiConsole.systemInstall();
@@ -70,10 +70,18 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
             checkVersionPresent(model);
         }
         if (active.test(session)) {
-            var version = manuallyBumped(model.getVersion(), getCurrent(session, model));
-            log("Latest released version {}", version);
+            String remoteVersion = getRemote(session, model);
             File cwd = getCwd(session);
-            var nextVersion = newVersion(version, name(cwd), defaultName(cwd), 1);
+            if (!isEmpty(remoteVersion)) {
+                log("Latest released version {}", remoteVersion);
+            }
+            var version = manuallyBumped(model.getVersion(), remoteVersion);
+            String nextVersion;
+            if (version._2) {
+                nextVersion = version._1;
+            } else {
+                nextVersion = newVersion(version._1, name(cwd), defaultName(cwd), 1);
+            }
             session.getSystemProperties().setProperty(NEXT_VERSION, nextVersion);
             log("Next version {}", nextVersion);
         }

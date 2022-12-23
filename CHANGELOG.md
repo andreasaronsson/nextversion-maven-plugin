@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 33 - 2022-12-23
+
+Find git revision also when not on a branch.
+Fix locally set SNAPSHOT versions that now go from e.g. 1-SNAPSHOT to 1 instead of 2 as before.
+
 ## 32 - 2022-04-03
 
 Handle the case when not on a branch.

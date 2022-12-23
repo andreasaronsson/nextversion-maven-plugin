@@ -12,15 +12,15 @@ interface Branch {
         String head = Try.of(() -> Files.readString(directory.toPath().
                         resolve(".git").resolve("HEAD"))).
                 getOrElseThrow(PluginException::new);
-        if (head.contains("ref")) {
+        if (head.contains("ref:")) {
             return head.replace("ref: refs/heads/", EMPTY).trim();
         }
-        return "HEAD";
+        return EMPTY;
     }
 
     default String defaultName(File directory) {
         return Try.of(() -> Files.readString(directory.toPath().
                         resolve(".git").resolve("refs").resolve("remotes").resolve("origin").resolve("HEAD"))).
-                getOrElseThrow(PluginException::new).replace("ref: refs/remotes/origin/", EMPTY).trim();
+                getOrElse("").replace("ref: refs/remotes/origin/", EMPTY).trim();
     }
 }

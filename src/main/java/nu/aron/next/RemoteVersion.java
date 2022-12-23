@@ -20,10 +20,10 @@ interface RemoteVersion {
     String RELEASE_OPEN = "<release>";
     String RELEASE_CLOSE = "</release>";
 
-    default String getCurrent(MavenSession session, Model model) {
+    default String getRemote(MavenSession session, Model model) {
         return versionFromString(xmlData(session, model))
-                .onEmpty(() -> log("No previous release found for {}. Will use version from pom and remove \"-SNAPSHOT\"", groupIdFromModel(model) + ":" + model.getArtifactId(), model.getVersion()))
-                .getOrElse(removeEnd(model.getVersion(), "-SNAPSHOT"));
+                .onEmpty(() -> log("No previous release found for {}.", groupIdFromModel(model) + ":" + model.getArtifactId(), model.getVersion()))
+                .getOrElse("");
 
     }
 

@@ -18,6 +18,7 @@ class Constants {
     static final String NEXT_COMMIT = "nextversion.commit";
     static final String NEXT_VERSION = "nextversion.version";
     static final String MASTER = "master";
+    static final String MAIN = "main";
     static final String SNAPSHOT = "SNAPSHOT";
     static final String ARTIFACT_ID = "artifactId";
     static final String GROUP_ID = "groupId";
