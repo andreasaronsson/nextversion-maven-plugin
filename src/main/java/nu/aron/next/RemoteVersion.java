@@ -40,20 +40,18 @@ interface RemoteVersion {
 
     private String urlFromRepo(String repoUrl, Model model) {
         var groupId = groupIdFromModel(model);
+        String token = System.getenv("CI_JOB_TOKEN");
+        if (nonNull(token)) {
+            return join("/", removeEnd(repoUrl, "/"), groupId.replace('.', '/'), model.getArtifactId(), "maven-metadata.xml?job_token=" + token);
+        }
         return join("/", removeEnd(repoUrl, "/"), groupId.replace('.', '/'), model.getArtifactId(), "maven-metadata.xml");
     }
 
     private String responseToString(String url) {
-        return Try.of(() -> newHttpClient().send(request(url), ofString())).get().body();
+        var request = newBuilder(URI.create(url)).build();
+        return Try.of(() -> newHttpClient().send(request, ofString())).get().body();
     }
 
-    private HttpRequest request(String url) {
-        String token = System.getenv("CI_JOB_TOKEN");
-        if (nonNull(token)) {
-            return newBuilder(URI.create(url)).header("Job-Token", token).build();
-        }
-        return newBuilder(URI.create(url)).build();
-    }
     private boolean notFound(String s) {
         return s.contains("404 Not Found");
     }
