@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 34 - 2022-12-23
+
+Add Job-Token to headers if `CI_JOB_TOKEN` is set.
+
 ## 33 - 2022-12-23
 
 Find git revision also when not on a branch.

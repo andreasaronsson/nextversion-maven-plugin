@@ -8,11 +8,14 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Model;
 
 import java.net.URI;
+import java.net.http.HttpRequest;
+import java.util.Objects;
 
 import static java.lang.String.join;
 import static java.net.http.HttpClient.newHttpClient;
 import static java.net.http.HttpRequest.newBuilder;
 import static java.net.http.HttpResponse.BodyHandlers.ofString;
+import static java.util.Objects.nonNull;
 import static nu.aron.next.Constants.log;
 
 interface RemoteVersion {
@@ -41,10 +44,16 @@ interface RemoteVersion {
     }
 
     private String responseToString(String url) {
-        var request = newBuilder(URI.create(url)).build();
-        return Try.of(() -> newHttpClient().send(request, ofString())).get().body();
+        return Try.of(() -> newHttpClient().send(request(url), ofString())).get().body();
     }
 
+    private HttpRequest request(String url) {
+        String token = System.getenv("CI_JOB_TOKEN");
+        if (nonNull(token)) {
+            return newBuilder(URI.create(url)).header("Job-Token", token).build();
+        }
+        return newBuilder(URI.create(url)).build();
+    }
     private boolean notFound(String s) {
         return s.contains("404 Not Found");
     }
