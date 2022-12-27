@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 36 - 2022-12-27
+
+Add Job-Token to headers if `CI_JOB_TOKEN` is set.
+Add info log statement.
+
 ## 35 - 2022-12-13
 
 Set job_token as query param instead of as header.

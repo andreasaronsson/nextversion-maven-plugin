@@ -40,15 +40,12 @@ interface RemoteVersion {
 
     private String urlFromRepo(String repoUrl, Model model) {
         var groupId = groupIdFromModel(model);
-        String token = System.getenv("CI_JOB_TOKEN");
-        if (nonNull(token)) {
-            return join("/", removeEnd(repoUrl, "/"), groupId.replace('.', '/'), model.getArtifactId(), "maven-metadata.xml?job_token=" + token);
-        }
         return join("/", removeEnd(repoUrl, "/"), groupId.replace('.', '/'), model.getArtifactId(), "maven-metadata.xml");
     }
 
     private String responseToString(String url) {
-        var request = newBuilder(URI.create(url)).build();
+        var request = request(url);
+        log("Requested metadata from {}", url);
         return Try.of(() -> newHttpClient().send(request, ofString())).get().body();
     }
 
