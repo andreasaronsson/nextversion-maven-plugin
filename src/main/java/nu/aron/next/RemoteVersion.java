@@ -6,6 +6,7 @@ import io.vavr.control.Try;
 import org.apache.maven.artifact.repository.ArtifactRepository;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.RepositoryBase;
 
 import java.net.URI;
 import java.net.http.HttpRequest;
@@ -31,8 +32,10 @@ interface RemoteVersion {
     }
 
     default String xmlData(MavenSession session, Model model) {
-        return List.ofAll(session.getRequest().getProjectBuildingRequest().getRemoteRepositories())
-                .map(ArtifactRepository::getUrl)
+        return List.ofAll(model.getRepositories())
+                .map(RepositoryBase::getUrl)
+                .appendAll(List.ofAll(session.getRequest().getProjectBuildingRequest().getRemoteRepositories())
+                        .map(ArtifactRepository::getUrl))
                 .map(u -> urlFromRepo(u, model))
                 .map(this::responseToString)
                 .reject(this::notFound).toCharSeq().toString();

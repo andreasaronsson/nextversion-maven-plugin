@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 37 - 2022-12-27
+
+Add repositories from model as well as session.
+This enables the plugin to use repositories from pom.xml.
+Previously only settings.xml was valid.
+
 ## 36 - 2022-12-27
 
 Add Job-Token to headers if `CI_JOB_TOKEN` is set.
