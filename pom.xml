@@ -4,7 +4,7 @@
   <parent>
     <groupId>nu.aron</groupId>
     <artifactId>maven-plugins</artifactId>
-    <version>30</version>
+    <version>31</version>
     <relativePath/>
   </parent>
   <artifactId>nextversion-maven-plugin</artifactId>
