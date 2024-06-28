@@ -7,15 +7,14 @@ import org.apache.maven.execution.MavenSession;
 import java.io.File;
 import java.nio.file.Path;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static nu.aron.next.CurrentWorkingDirectory.getCwd;
 
 interface GitRevision extends LogAndSet, Branch {
 
     default void revision(MavenSession session) {
         Path p = findPath(getCwd(session));
-        String rev = Try.of(() -> new ReversedLinesFileReader(p.toFile(), UTF_8).readLine()).
-                getOrElseThrow(PluginException::new).trim();
+        var rev = Try.of(() -> ReversedLinesFileReader.builder().setFile(p.toFile()).get().readLine().trim()).
+            getOrElseThrow(PluginException::new);
         put(session, rev.split(" ")[1].trim());
     }
 

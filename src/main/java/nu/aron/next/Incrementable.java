@@ -11,7 +11,6 @@ import static java.util.Objects.isNull;
 import static nu.aron.next.Constants.EMPTY;
 import static nu.aron.next.Constants.SNAPSHOT;
 import static nu.aron.next.Constants.log;
-import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 interface Incrementable {
     default String newVersion(String currentVersion, String branch, String defaultBranch, int increment) {
@@ -34,7 +33,7 @@ interface Incrementable {
     }
 
     private String addBranch(String version, String branch, String defaultBranch) {
-        if (branch.equals(defaultBranch) || isEmpty(branch) || isEmpty(defaultBranch)) {
+        if (branch.equals(defaultBranch) || isNull(branch) || branch.isBlank() || isNull(defaultBranch) || defaultBranch.isBlank()) {
             return version;
         }
         return version + "-" + branch.replace("/", "-");
@@ -49,7 +48,7 @@ interface Incrementable {
         var remote = new DefaultArtifactVersion(remoteVersion);
         if (isManual(pom, remote)) {
             log("Version is manually set to {}", pomVersion);
-            if (isEmpty(remoteVersion)) {
+            if (isNull(remoteVersion) || remoteVersion.isBlank()) {
                 return Tuple.of(newVersion(pomVersion, EMPTY, EMPTY, 1), true);
             }
             return Tuple.of(newVersion(pomVersion, EMPTY, EMPTY, 0), true);
