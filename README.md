@@ -6,7 +6,7 @@
 
 This plugin can be used to release.
 Increments versions CD style.
-Java 11+.
+Java 17+.
 Queries the deployment repo to know 'previous version'.
 Then increments the version number.
 Changes in pom.xml are not checked in.
