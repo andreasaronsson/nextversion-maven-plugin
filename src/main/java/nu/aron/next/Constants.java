@@ -41,11 +41,11 @@ class Constants {
 
     static void log(String message, String... args) {
         logger.info("--- " + ansi().fgGreen().a(LOGNAME).reset() + " ---"); // NOSONAR
-        logger.info(message, args);
+        logger.info(message, (Object[]) args);
     }
 
     static void logError(String message, String... args) {
         logger.error("--- " + ansi().fgGreen().a(LOGNAME).reset() + " ---"); // NOSONAR
-        logger.error(message, args);
+        logger.error(message, (Object[]) args);
     }
 }

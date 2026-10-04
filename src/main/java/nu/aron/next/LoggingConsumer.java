@@ -1,12 +1,10 @@
 package nu.aron.next;
 
-import org.apache.maven.shared.utils.cli.CommandLineUtils.StringStreamConsumer;
-
 import static nu.aron.next.Constants.logger;
 
-class LoggingConsumer extends StringStreamConsumer {
+class LoggingConsumer implements java.util.function.Consumer<String> {
     @Override
-    public void consumeLine(String line) {
-        logger.error("{}", line);
+    public void accept(String message) {
+        logger.error("{}", message);
     }
 }

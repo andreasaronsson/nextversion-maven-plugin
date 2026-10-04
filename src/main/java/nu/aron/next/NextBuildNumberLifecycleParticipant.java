@@ -8,8 +8,6 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.ModelReader;
 import org.apache.maven.model.io.ModelWriter;
-import org.codehaus.plexus.component.annotations.Component;
-import org.codehaus.plexus.component.annotations.Requirement;
 import org.fusesource.jansi.AnsiConsole;
 
 import java.io.File;
@@ -17,6 +15,8 @@ import java.io.FileOutputStream;
 import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.function.Consumer;
+
+import javax.inject.Named;
 
 import static java.lang.String.join;
 import static java.util.Objects.isNull;
@@ -28,20 +28,17 @@ import static nu.aron.next.Constants.VERSION;
 import static nu.aron.next.Constants.log;
 import static nu.aron.next.Constants.logError;
 import static nu.aron.next.CurrentWorkingDirectory.getCwd;
-import static org.apache.maven.shared.utils.StringUtils.isEmpty;
 
 /**
  * Queries the deployment repo for current latest version.
  * Sets the version to current latest version +1
  */
-@Component(role = AbstractMavenLifecycleParticipant.class, hint = "NextBuildNumberLifecycleParticipant")
+@Named("NextBuildNumberLifecycleParticipant")
 public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleParticipant implements Incrementable,
-        GitRevision, RemoteVersion, Activator, Branch, Modelbuilder {
+        GitRevision, RemoteVersion, Activator, Modelbuilder {
 
     private final Activation active = this::activated;
-    @Requirement
     private ModelWriter modelWriter;
-    @Requirement
     private ModelReader modelReader;
     @Override
     public void afterSessionStart(MavenSession session) throws MavenExecutionException {
@@ -72,7 +69,7 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         if (active.test(session)) {
             String remoteVersion = getRemote(session, model);
             File cwd = getCwd(session);
-            if (!isEmpty(remoteVersion)) {
+            if (!remoteVersion.isEmpty()) {
                 log("Latest released version {}", remoteVersion);
             }
             var version = manuallyBumped(model.getVersion(), remoteVersion);

@@ -10,7 +10,6 @@ import org.apache.maven.model.RepositoryBase;
 
 import java.net.URI;
 import java.net.http.HttpRequest;
-import java.util.Objects;
 
 import static java.lang.String.join;
 import static java.net.http.HttpClient.newHttpClient;
