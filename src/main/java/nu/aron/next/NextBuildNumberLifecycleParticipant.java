@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.function.Consumer;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import static java.lang.String.join;
@@ -37,8 +38,15 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
         GitRevision, RemoteVersion, Activator, Modelbuilder {
 
     private final Activation active = this::activated;
-    private ModelWriter modelWriter;
-    private ModelReader modelReader;
+    private final ModelWriter modelWriter;
+    private final ModelReader modelReader;
+
+    @Inject
+    public NextBuildNumberLifecycleParticipant(ModelWriter modelWriter, ModelReader modelReader) {
+        this.modelWriter = modelWriter;
+        this.modelReader = modelReader;
+    }
+
     @Override
     public void afterSessionStart(MavenSession session) throws MavenExecutionException {
         doWork(this::revision, session);

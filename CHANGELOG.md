@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 39 - 2026-11-18
+
+Fix "Unable to create maven model. Skipping." in 38.
+`ModelReader` and `ModelWriter` were not injected after the switch from Plexus to JSR-330 annotations,
+so the plugin never read the pom and never incremented the version.
+
 ## 38 - 2026-11-18
 
 Fix `NoClassDefFoundError: org/fusesource/jansi/AnsiConsole` on Maven 3.10.
