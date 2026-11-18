@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## 38 - 2026-11-18
+
+Fix `NoClassDefFoundError: org/fusesource/jansi/AnsiConsole` on Maven 3.10.
+The Jansi dependency is removed; colored output now uses plain ANSI escape codes.
+Publish through the Sonatype Central Portal (parent `nu.aron:maven-plugins:32`), including a javadoc jar.
+Require Java 25.
+
 ## 37 - 2022-12-27
 
 Add repositories from model as well as session.

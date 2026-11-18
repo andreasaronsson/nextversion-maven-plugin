@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Properties;
 
 import static java.lang.String.join;
-import static org.fusesource.jansi.Ansi.ansi;
 
 class Constants {
     static final String EMPTY = "";
@@ -23,6 +22,8 @@ class Constants {
     static final String ARTIFACT_ID = "artifactId";
     static final String GROUP_ID = "groupId";
     static final String NEXTVERSION_MAVEN_PLUGIN = "nextversion-maven-plugin";
+    private static final String GREEN = "\u001B[32m";
+    private static final String RESET = "\u001B[0m";
     private static final String LOGNAME = join(":", NEXTVERSION_MAVEN_PLUGIN, version(), RUN);
     static Logger logger = LoggerFactory.getLogger(NEXTVERSION_MAVEN_PLUGIN);
 
@@ -40,12 +41,12 @@ class Constants {
     }
 
     static void log(String message, String... args) {
-        logger.info("--- " + ansi().fgGreen().a(LOGNAME).reset() + " ---"); // NOSONAR
+        logger.info("--- " + GREEN + LOGNAME + RESET + " ---"); // NOSONAR
         logger.info(message, (Object[]) args);
     }
 
     static void logError(String message, String... args) {
-        logger.error("--- " + ansi().fgGreen().a(LOGNAME).reset() + " ---"); // NOSONAR
+        logger.error("--- " + GREEN + LOGNAME + RESET + " ---"); // NOSONAR
         logger.error(message, (Object[]) args);
     }
 }

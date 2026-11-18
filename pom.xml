@@ -8,7 +8,7 @@
     <relativePath/>
   </parent>
   <artifactId>nextversion-maven-plugin</artifactId>
-  <version>37</version>
+  <version>38</version>
   <packaging>maven-plugin</packaging>
   <name>${project.groupId}:${project.artifactId}</name>
   <url>https://github.com/andreasaronsson/nextversion-maven-plugin</url>
@@ -33,16 +33,6 @@
     <tag>HEAD</tag>
     <url>https://github.com/andreasaronsson/nextversion-maven-plugin</url>
   </scm>
-  <distributionManagement>
-    <repository>
-      <id>ossrh</id>
-      <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2</url>
-    </repository>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -117,11 +107,6 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.fusesource.jansi</groupId>
-      <artifactId>jansi</artifactId>
-      <version>2.4.3</version>
-    </dependency>
-    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-nop</artifactId>
       <version>2.0.20</version>
@@ -183,23 +168,13 @@
             <configuration>
               <rules>
                 <requireJavaVersion>
-                  <version>11</version>
+                  <version>25</version>
                 </requireJavaVersion>
                 <!-- <dependencyConvergence></dependencyConvergence> -->
               </rules>
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.sonatype.plugins</groupId>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <serverId>ossrh</serverId>
-          <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-          <autoReleaseAfterClose>true</autoReleaseAfterClose>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -231,7 +206,6 @@
             <goals>
               <goal>jar</goal>
             </goals>
-            <phase>none</phase>
           </execution>
         </executions>
       </plugin>

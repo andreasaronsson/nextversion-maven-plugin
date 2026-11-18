@@ -2,11 +2,10 @@
 
 ![Java CI](https://github.com/andreasaronsson/nextversion-maven-plugin/workflows/Java%20CI/badge.svg)
 
-[![Download](https://api.bintray.com/packages/aron/maven/nextversion-maven-plugin/images/download.svg)](https://bintray.com/aron/maven/nextversion-maven-plugin/_latestVersion)
 
 This plugin can be used to release.
 Increments versions CD style.
-Java 17+.
+Java 25+.
 Queries the deployment repo to know 'previous version'.
 Then increments the version number.
 Changes in pom.xml are not checked in.

@@ -8,7 +8,6 @@ import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.ModelReader;
 import org.apache.maven.model.io.ModelWriter;
-import org.fusesource.jansi.AnsiConsole;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -42,11 +41,9 @@ public class NextBuildNumberLifecycleParticipant extends AbstractMavenLifecycleP
     private ModelReader modelReader;
     @Override
     public void afterSessionStart(MavenSession session) throws MavenExecutionException {
-        AnsiConsole.systemInstall();
         doWork(this::revision, session);
         doWork(this::version, session);
         doWork(this::write, session);
-        AnsiConsole.systemUninstall();
     }
 
     private void doWork(Consumer<MavenSession> c, MavenSession s) throws MavenExecutionException {
